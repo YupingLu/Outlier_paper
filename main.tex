@@ -14,12 +14,12 @@
 % on the last page of the document
 
 % The following packages can be found on http:\\www.ctan.org
-%\usepackage{graphics} % for pdf, bitmapped graphics files
-%\usepackage{epsfig} % for postscript graphics files
-%\usepackage{mathptmx} % assumes new font selection scheme installed
-%\usepackage{times} % assumes new font selection scheme installed
-%\usepackage{amsmath} % assumes amsmath package installed
-%\usepackage{amssymb}  % assumes amsmath package installed
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
 
 \title{\LARGE \bf
 Outlier Detection for ARM Data
@@ -38,7 +38,12 @@ Outlier Detection for ARM Data
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
 
-Add outlier detection abstract here.
+Outliers are common in ARM data. These outliers could be either an instrument
+failure or extreme weather event. Multiple methods are available to detect 
+these outliers from the huge ARM datasets. We combined Pearson Correlation Coefficient, 
+Singular Spectrum Analysis and K-means methods together as a whole framework
+to track down these outliers. Compared to the current outliers recorded in the
+DQR database, our results showed this framework is promising.
 
 \end{abstract}
 
@@ -46,24 +51,28 @@ Add outlier detection abstract here.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
 We will use this section to introduce the background of outlier detection for 
-time series data. \cite{gupta2014outlier} Also mention the problem in ARM data 
-here?
+time series data. \cite{gupta2014outlier} 
 
+The Atmospheric Radiation Measurement (ARM) user facility was founded by the U.S. 
+Department of Energy (DOE) in 1989 \cite{ARM}. Since then, its aim is to be the 
+platforms for the observation and study of Earth's climate. Huge ARM datasests 
+are generated and stored in ARM data center daily. And outliers are pretty common 
+in these datasets. Currently, these datasets are checked manually and outliers 
+are stored in Data Quality Report (DQR) database to be fixed.
 
 \section{Datasets}
-Atmospheric Radiation Measurement (ARM) user facility data are collected through 
-routine operations and scientific field experiments. ARM data include routine 
-data products, value-added products (VAPs), field campaign data, complementary 
-external data products from collaborating programs, and data contributed by ARM 
-principal investigators for use by the scientific community. Data quality 
-reports, graphical displays of data availability/quality, and data plots are 
-also available from the ARM Data Center.
-
-We tested 24 datasets and 5 variables which are \textit{temp\_mean}, 
+ARM data center gathers data from multiple data sources. It ranges from \textit{Atmospheric 
+Profiling} to \textit{Satellite Observations}. All these data are measured at different 
+locations using different instruments. Each instrument may only work on a specified
+time range. For the raw netcdf dataset collected from each instrument, it contains
+multiple variables. In this paper, we only tested Surface Meteorology Systems (MET)
+data collected from the Southern Great Plains (SGP). There were total 24 instruments
+in SGP area and we chose 5 typical variables which are \textit{temp\_mean}, 
 \textit{vapor\_pressure\_mean}, \textit{atmos\_pressure}, 
-\textit{rh\_mean} and \textit{wspd\_arith\_mean}.
+\textit{rh\_mean} and \textit{wspd\_arith\_mean} from multiple variables. Table 1 
+contains the detail of these datasets.
 
-\begin{table}[h]
+\begin{table}[ht]
 \caption{SGPMET datasets tested}
 \label{tab:template}
 \centering
@@ -96,8 +105,16 @@ Mention methods we used in this paper and how do we preprocess the data.
 \subsection{Pearson Correlation Coefficient} 
 PCC goes here \cite{pearson1895note}.
 
+% add detail explanation about the figure later
 \subsection{Singular Spectrum Analysis}
 SSA goes here \cite{golyandina2013singular, alexandrov2008method}.
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{E33.png}
+    \caption{Example of SSA application on ARM data. E33 temp\_mean data full 
+    decomposition.}
+    \label{fig:sample_figure}
+\end{figure*}
 
 \subsection{K-means}
 k-means goes here \cite{hartigan1979algorithm}.
@@ -110,7 +127,7 @@ recall result here \cite{perry1955machine}.
 
 \section{Conclusions}
 We presented a combined model to detect outliers for ARM data. Future work: 
-ML and tried methods working on multiple instruments multiple sites.
+ML and tried methods working on multiple instruments multiple sites \cite{phillips2015graph}.
 
 %\addtolength{\textheight}{-12cm}  % This command serves to balance the column lengths
                                   % on the last page of the document manually. It shortens
