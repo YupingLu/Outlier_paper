@@ -97,13 +97,17 @@ End Year & 2017 & 2017 & 2017 & 2017 & 2017 & 2017\\
 \end{tabular}
 \end{table}
 
-%var_names = ['temp_mean', 'vapor_pressure_mean', 'atmos_pressure', 'rh_mean', 'wspd_arith_mean']
-
 \section{Methodology}
 Mention methods we used in this paper and how do we preprocess the data.
 
 \subsection{Pearson Correlation Coefficient} 
 PCC goes here \cite{pearson1895note}.
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{Spring.png}
+    \caption{Violin plot: Spring 5 variables from SGPMET}
+    \label{fig:pc}
+\end{figure*}
 
 % add detail explanation about the figure later
 \subsection{Singular Spectrum Analysis}
@@ -113,17 +117,27 @@ SSA goes here \cite{golyandina2013singular, alexandrov2008method}.
     \includegraphics[width=\textwidth]{E33.png}
     \caption{Example of SSA application on ARM data. E33 temp\_mean data full 
     decomposition.}
-    \label{fig:sample_figure}
+    \label{fig:ssa}
 \end{figure*}
 
 \subsection{K-means}
 k-means goes here \cite{hartigan1979algorithm}.
-
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{kmeans.png}
+    \caption{E33 K-means}
+    \label{fig:kmeans}
+\end{figure*}
 
 \section{Results and Discussion}
 Results and pics go here. Comparison metric: DQR database. Add precision and 
 recall result here \cite{perry1955machine}.
-
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{combined.png}
+    \caption{E33 temp\_mean combined}
+    \label{fig:combined}
+\end{figure*}
 
 \section{Conclusions}
 We presented a combined model to detect outliers for ARM data. Future work: 
