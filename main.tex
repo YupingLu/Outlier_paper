@@ -20,6 +20,8 @@
 \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{xcolor}
+\usepackage{flowchart}
+\usetikzlibrary{shapes,arrows}
 
 \title{\LARGE \bf
 Outlier Detection for ARM Data
@@ -74,7 +76,7 @@ contains the detail of these datasets.
 
 \begin{table}[ht]
 \caption{SGPMET datasets tested}
-\label{tab:template}
+\label{tab:datasets}
 \centering
 \begin{tabular}{|l|c|c|c|c|c|c|c|c|}
 \hline
@@ -101,7 +103,11 @@ End Year & 2017 & 2017 & 2017 & 2017 & 2017 & 2017\\
 Mention methods we used in this paper and how do we preprocess the data.
 
 \subsection{Pearson Correlation Coefficient} 
-PCC goes here \cite{pearson1895note}.
+Pearson Correlation Coefficient was first introduced by Karl Pearson\cite{pearson1895note}. 
+It is used to measure the linear correlation between two variables. Pearson correlation 
+coefficient falls in [-1, 1]. If the value is close to -1, it means those two variables are 
+highly negatively related. On the other hand, then the two variables are strongly positively 
+related. If the value is near 0, it means those two variables don't have linear relation.  
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{Spring.png}
@@ -112,6 +118,38 @@ PCC goes here \cite{pearson1895note}.
 % add detail explanation about the figure later
 \subsection{Singular Spectrum Analysis}
 SSA goes here \cite{golyandina2013singular, alexandrov2008method}.
+
+% add workflow of ssa here
+\textbf{1st step:} Form the trajectory matrix and find the eigen decomp.
+\textbf{2nd step:} Find the dominant frequency of each eigenvector.
+\textbf{3rd step:} Convert periodicity into frequency
+\textbf{4th step:} Build an approximation of X by taking a subset of the decomposition. This approximation is formed by taking eigenvectors whose dominant frequency is close to the targeted values.
+\textbf{5th step:} Now we reconstruct the signal by taking a mean of all the approximations. 
+
+\begin{figure}[ht]
+    \centering
+    % Define block styles
+    \tikzstyle{decision} = [diamond, draw, fill=blue!20, text width=4.5em,text badly centered, node distance=3cm, inner sep=0pt]
+    \tikzstyle{block} = [rectangle, draw, fill=blue!20, minimum width=5em, text centered, rounded corners, minimum height=2em]
+    \tikzstyle{line} = [draw, -latex']
+    \tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm, text width=3em, minimum height=2em]
+    \begin{tikzpicture}[node distance = 2cm, auto]
+        % Place nodes
+        \node [block] (init) {\small Embedding};
+        \node [block, right of=init, node distance=3cm] (decomp) {\small Decomposition};
+        \node [block, right of=decomp, node distance=3cm] (group) {\small Eigentriple grouping};
+        \node [block, below of=group] (diag) {\small Diagonal averaging};
+        \node [block, left of=diag, node distance=3cm] (approx) {\small Approximation};
+        % Draw edges
+        \path [line] (init) -- (decomp);
+        \path [line] (decomp) -- (group);
+        \path [line] (group) -- (diag);
+        \path [line] (diag) -- (approx);
+    \end{tikzpicture}
+    \caption{Flowchart of SSA}
+    \label{fig:pcs}
+\end{figure}
+
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{E33.png}
@@ -130,14 +168,52 @@ k-means goes here \cite{hartigan1979algorithm}.
 \end{figure*}
 
 \section{Results and Discussion}
-Results and pics go here. Comparison metric: DQR database. Add precision and 
-recall result here \cite{perry1955machine}.
+Results and pics go here. Comparison metric: DQR database. 
+
+
+
+Add precision and recall result here \cite{perry1955machine}.
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{combined.png}
     \caption{E33 temp\_mean combined}
     \label{fig:combined}
 \end{figure*}
+
+\begin{table}[ht]
+\caption{Precision and Recall of SSA and K-means}
+\label{tab:pr}
+\centering
+\begin{tabular}{|l|c|c|c|}
+\hline
+Method & Variable & Precision & Recall\\
+\hline
+SSA & temp\_mean & 16.00\% & 1.20\%\\
+SSA & vapor\_pressure\_mean & 20.70\% & 1.40\%\\
+SSA & atmos\_pressure & 0.00\% & 0.00\%\\
+SSA & rh\_mean & 14.80\% & 0.50\%\\
+SSA & wspd\_arith\_mean & 0.60\% & 1.50\%\\
+Kmeans & 5 together & 12.90\% & 1.90\%\\
+Combined & 5 together & 11.10\% & 4.10\%\\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+\caption{Comparison of SSA and K-means Outlier Set Size}
+\label{tab:comp}
+\centering
+\begin{tabular}{|l|c|}
+\cline{2-2}
+\multicolumn{1}{l|}{} & Outlier Set Size\\
+\hline
+SSA & 922\\
+K-means & 508\\
+Intersection & 378\\
+Symmetric Difference & 674\\
+\hline
+\end{tabular}
+\end{table}
 
 \section{Conclusions}
 We presented a combined model to detect outliers for ARM data. Future work: 
