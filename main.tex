@@ -27,7 +27,7 @@
 Outlier Detection for ARM Data
 }
 
-\author{Yuping Lu$^{1}$, Jitendra Kumar$^{2}$ and Michael A. Langston$^{1}$% <-this % stops a space
+\author{Yuping Lu$^{1}$, Jitendra Kumar$^{2}$, Nathan Collier$^{2}$ and Michael A. Langston$^{1}$% <-this % stops a space
 \thanks{$^{1}$University of Tennessee, Knoxville, TN, USA}%
 \thanks{$^{2}$Oak Ridge National Laboratory, Oak Ridge, TN, USA}%
 }
@@ -40,39 +40,19 @@ Outlier Detection for ARM Data
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
 
-Outliers are common in ARM data. These outliers could be either an instrument
-failure or extreme weather event. Multiple methods are available to detect 
-these outliers from the huge ARM datasets. We combined Pearson Correlation Coefficient, 
-Singular Spectrum Analysis and K-means methods together as a whole framework
-to track down these outliers. Compared to the current outliers recorded in the
-DQR database, our results showed this framework is promising.
+Outliers are common in ARM data. These outliers could be either an instrument failure or extreme weather event. Multiple methods are available to detect these outliers from the huge ARM datasets. We combined Pearson Correlation Coefficient, Singular Spectrum Analysis and K-means methods together as a whole framework to track down these outliers. Compared to the current outliers recorded in the DQR database, our results showed this framework is promising.
 
 \end{abstract}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
-We will use this section to introduce the background of outlier detection for 
-time series data. \cite{gupta2014outlier} 
+We will use this section to introduce the background of outlier detection for time series data. \cite{gupta2014outlier} 
 
-The Atmospheric Radiation Measurement (ARM) user facility was founded by the U.S. 
-Department of Energy (DOE) in 1989 \cite{ARM}. Since then, its aim is to be the 
-platforms for the observation and study of Earth's climate. Huge ARM datasests 
-are generated and stored in ARM data center daily. And outliers are pretty common 
-in these datasets. Currently, these datasets are checked manually and outliers 
-are stored in Data Quality Report (DQR) database to be fixed.
+The Atmospheric Radiation Measurement (ARM) user facility was founded by the U.S. Department of Energy (DOE) in 1989 \cite{ARM}. Since then, its aim is to be the platforms for the observation and study of Earth's climate. Huge ARM datasets are generated and stored in ARM data center daily. And outliers are pretty common in these datasets. Currently, these datasets are checked manually and outliers are stored in Data Quality Report (DQR) database to be fixed.
 
 \section{Datasets}
-ARM data center gathers data from multiple data sources. It ranges from \textit{Atmospheric 
-Profiling} to \textit{Satellite Observations}. All these data are measured at different 
-locations using different instruments. Each instrument may only work on a specified
-time range. For the raw netcdf dataset collected from each instrument, it contains
-multiple variables. In this paper, we only tested Surface Meteorology Systems (MET)
-data collected from the Southern Great Plains (SGP). There were total 24 instruments
-in SGP area and we chose 5 typical variables which are \textit{temp\_mean}, 
-\textit{vapor\_pressure\_mean}, \textit{atmos\_pressure}, 
-\textit{rh\_mean} and \textit{wspd\_arith\_mean} from multiple variables. Table 1 
-contains the detail of these datasets.
+ARM data center gathers data from multiple data sources. It ranges from \textit{Atmospheric Profiling} to \textit{Satellite Observations}. All these data are measured at different locations using different instruments. Each instrument may only work on a specified time range. For the raw netcdf dataset collected from each instrument, it contains multiple variables. In this paper, we only tested Surface Meteorology Systems (MET) data collected from the Southern Great Plains (SGP). There were total 24 instruments in SGP area and we chose 5 typical variables which are \textit{temp\_mean}, \textit{vapor\_pressure\_mean}, \textit{atmos\_pressure}, \textit{rh\_mean} and \textit{wspd\_arith\_mean} from multiple variables. Table 1 contains the detail of these datasets.
 
 \begin{table}[ht]
 \caption{SGPMET datasets tested}
@@ -100,14 +80,11 @@ End Year & 2017 & 2017 & 2017 & 2017 & 2017 & 2017\\
 \end{table}
 
 \section{Methodology}
-Mention methods we used in this paper and how do we preprocess the data.
+Mention methods we used in this paper and how do we preprocess the data. 
 
 \subsection{Pearson Correlation Coefficient} 
-Pearson Correlation Coefficient was first introduced by Karl Pearson\cite{pearson1895note}. 
-It is used to measure the linear correlation between two variables. Pearson correlation 
-coefficient falls in [-1, 1]. If the value is close to -1, it means those two variables are 
-highly negatively related. On the other hand, then the two variables are strongly positively 
-related. If the value is near 0, it means those two variables don't have linear relation.  
+Pearson Correlation Coefficient was first introduced by Karl Pearson\cite{pearson1895note}. It is used to measure the linear correlation between two variables. Pearson correlation coefficient is calculated from the covariance of two variables divided by the multiplication of the standard deviation of those two variables. Thus the value falls in [-1, 1]. If the value is close to -1, it means those two variables are highly negatively related. On the other hand, then the two variables are strongly positively related. If the value is near 0, it means those two variables don't have linear relation. 
+
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{Spring.png}
@@ -115,17 +92,10 @@ related. If the value is near 0, it means those two variables don't have linear 
     \label{fig:pc}
 \end{figure*}
 
-% add detail explanation about the figure later
 \subsection{Singular Spectrum Analysis}
-SSA goes here \cite{golyandina2013singular, alexandrov2008method}.
+Singular Spectrum Analysis (SSA) is a popular method for time series data analysis \cite{golyandina2013singular, golyandina2014basic}. The general idea is to use a subset of the decomposition of trajectory matrix to approximate it. Many applications can be found in \cite{golyandina2013singular}. For example, SSA can be applied to monitor volcanic activity \cite{bozzo2010relationship}. It can also be used to extract trend \cite{alexandrov2008method}. Different from the classic SSA method, we defined our own version of SSA to best work on ARM data. Figure 2 is a demonstration of the workflow of SSA. Below is the formal description of the algorithm.
 
 % add workflow of ssa here
-\textbf{1st step:} Form the trajectory matrix and find the eigen decomp.
-\textbf{2nd step:} Find the dominant frequency of each eigenvector.
-\textbf{3rd step:} Convert periodicity into frequency
-\textbf{4th step:} Build an approximation of X by taking a subset of the decomposition. This approximation is formed by taking eigenvectors whose dominant frequency is close to the targeted values.
-\textbf{5th step:} Now we reconstruct the signal by taking a mean of all the approximations. 
-
 \begin{figure}[ht]
     \centering
     % Define block styles
@@ -137,18 +107,62 @@ SSA goes here \cite{golyandina2013singular, alexandrov2008method}.
         % Place nodes
         \node [block] (init) {\small Embedding};
         \node [block, right of=init, node distance=3cm] (decomp) {\small Decomposition};
-        \node [block, right of=decomp, node distance=3cm] (group) {\small Eigentriple grouping};
-        \node [block, below of=group] (diag) {\small Diagonal averaging};
-        \node [block, left of=diag, node distance=3cm] (approx) {\small Approximation};
+        \node [block, below of=decomp] (freq) {\small Finding Dominant Frequency};
+        \node [block, below of=freq] (period) {\small Converting Periodicity into Frequency};
+        \node [block, below of=period] (approx) {\small Approximation};
+        \node [block, left of=approx, node distance=3cm] (re) {\small Reconstruction};
         % Draw edges
         \path [line] (init) -- (decomp);
-        \path [line] (decomp) -- (group);
-        \path [line] (group) -- (diag);
-        \path [line] (diag) -- (approx);
+        \path [line] (decomp) -- (freq);
+        \path [line] (freq) -- (period);
+        \path [line] (period) -- (approx);
+        \path [line] (approx) -- (re);
     \end{tikzpicture}
     \caption{Flowchart of SSA}
     \label{fig:pcs}
 \end{figure}
+
+% SSA algorithm description
+% T = Y.size
+% assert L <= T/2
+% K = T - L + 1
+Assuming we have an ARM data X which has length T.
+
+1) Form the trajectory matrix
+
+2) Find the eigen decomp. 
+
+2) Find the dominant frequency of each eigenvector
+
+3) Convert periodicity into frequency
+
+4) Build an approximation of X by taking a subset of the decomposition. This approximation is formed by taking eigenvectors whose dominant frequency is close to the targeted values.
+
+5) Now we reconstruct the signal by taking a mean of all the approximations.
+
+% The theory behind this method? Need Nate's help
+% Input matrix is Y
+% trajectory matrix is X
+
+\begin{align*}
+X_i = (y_i,\ \ldots,\ y_{i+L-1})^T \quad (1 \leq i \leq K) \\
+\mathbf{X} = [X_i,\ \ldots,\ X_K] 
+\end{align*}
+
+\begin{equation}
+\mathbf{X} = (x_{ij})_{i,j=1}^{L,K}  = \left(\begin{IEEEeqnarraybox*}[][c]{,c/c/c/c/c,}
+y_1 & y_2 & y_3 & \ldots & y_K\\
+y_2 & y_3 & y_4 & \ldots & y_{K+1}\\
+y_3 & y_4 & y_5 & \ldots & y_{K+2}\\
+\vdots & \vdots & \vdots & \ddots & \vdots\\
+y_L & y_{L+1} & y_{L+2} & \ldots & y_T
+\end{IEEEeqnarraybox*}\right)
+\end{equation}
+
+\begin{equation}
+\mathbf{X} = \mathbf{X_1} + \ldots + \mathbf{X_d}
+\end{equation}
+where $\mathbf{X_i} = \sqrt{\lambda_i} U_i V_i^T$
 
 \begin{figure*}[ht]
     \centering
@@ -158,8 +172,12 @@ SSA goes here \cite{golyandina2013singular, alexandrov2008method}.
     \label{fig:ssa}
 \end{figure*}
 
+Mention the trend is flat. What parameters do we pick for SSA.
+
+
 \subsection{K-means}
-k-means goes here \cite{hartigan1979algorithm}.
+k-means is a partitioning clustering algorithm \cite{macqueen1967some, hartigan1979algorithm}. It starts with the k centroids user specified, and assigns the points to the nearest centroid. Then it computes the new k centroids and assign other points to these centroids again. The process repeats until it converges.
+
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{kmeans.png}
@@ -168,11 +186,10 @@ k-means goes here \cite{hartigan1979algorithm}.
 \end{figure*}
 
 \section{Results and Discussion}
-Results and pics go here. Comparison metric: DQR database. 
+SSA is an univariate method. K-means is a multivariate method. Results and pics go here. Comparison metric: DQR database. 
 
+Precision and recall was first defined in \cite{perry1955machine}. It is commonly used to measure the quality of classification tasks \cite{olson2008advanced}. Precision is calculated from True Positives divided by the sum of True Positives and False Positives. On the other hand, recall is measured from True Positives divided by the sum of True Positives and False Negatives. In this paper, detected outliers in the DQR database are the ground truth. So we treated these as True Positives. Thus detected outliers not in the DQR database are False Positives. Undetected values which in the DQR database are False Negatives, and which not in the DQR database are True Negatives. Analysis of table 2 and 3 goes here.
 
-
-Add precision and recall result here \cite{perry1955machine}.
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{combined.png}
