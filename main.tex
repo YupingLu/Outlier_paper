@@ -167,7 +167,7 @@ where $x_{ij} = y_{i+j-1}$. We can see from equation 1 that matrix \textbf{X} ha
 \end{equation}
 where $\mathbf{X_i} = \sqrt{\lambda_i} P_i V_i^T$.
 
-3) In this step, we use Fast Fourier transform (FFT) to find the dominant frequency of each eigenvector \cite{cooley1965algorithm} . Algorithm 1 shows the process.
+3) In this step, we use Fast Fourier transform (FFT) to find the dominant frequency of each eigenvector \cite{cooley1965algorithm} . Algorithm 1 shows the whole process.
 
 \begin{algorithm}[ht]
 \DontPrintSemicolon
@@ -179,31 +179,37 @@ where $\mathbf{X_i} = \sqrt{\lambda_i} P_i V_i^T$.
 \Output{Dominant frequency of each eigenvector}
 \BlankLine
 
-fftfreq $\leftarrow $ Discrete Fourier Transform sample frequencies\;
-fft $\leftarrow $ Discrete Fourier Transform\;
-len $\leftarrow $ size of $\lambda$\;
-frequencies $\leftarrow $ zero vector of size len\;
-fs $\leftarrow $ fftfreq($\lambda$)\;
-ix $\leftarrow $ indices that sort fs\;
-fs $\leftarrow $ fs[ix]\;
+fftfreq $\leftarrow$ Discrete Fourier Transform sample frequencies\;
+fft $\leftarrow$ Discrete Fourier Transform\;
+len $\leftarrow$ size of $\lambda$\;
+frequencies $\leftarrow$ zero vector of size len\;
+fs $\leftarrow$ fftfreq($\lambda$)\;
+ix $\leftarrow$ indices that sort fs\;
+fs $\leftarrow$ fs[ix]\;
 \For{i in range(len)}{
-    p1 $\leftarrow $ abs(fft($\mathbf{P}$[:,i]))\;
-    ps $\leftarrow $ p1**2\;
-    ps $\leftarrow $ ps[ix]\;
-    frequencies[i] $\leftarrow $ fs[index of the maximum value in ps]\;
+    p1 $\leftarrow$ abs(fft($\mathbf{P}$[:,i]))\;
+    ps $\leftarrow$ p1**2\;
+    ps $\leftarrow$ ps[ix]\;
+    frequencies[i] $\leftarrow$ fs[index of the maximum value in ps]\;
 }
-return abs(frequencies)
+\Return abs(frequencies)
 \caption{Dominant Frequency Finder}
 \end{algorithm}
 
-4) Convert periodicity into frequency. Let P be the vector of user specified periodicity.
+4) Let G be the vector of user specified periodicity. We then convert G into a vector of targeted frequency TF for the next step. Here 0 is also added to TF. We use M to denote the length of TF.
 
-5) Build an approximation of X by taking a subset of the decomposition. This approximation is formed by taking eigenvectors whose dominant frequency is close to the targeted values.
+5) As we can see in step 2, there are d $\mathbf{X_i}$. The goal is to build an approximation of X by taking a subset of the decomposition $\mathbf{X_i}$. This approximation is formed by taking eigenvectors whose dominant frequency is close to the targeted frequency. Thus we have an approximation matrix $\mathbf{Xt}$ of size $M \times L \times K$.
 
-6) Now we reconstruct the signal by taking a mean of all the approximations.
+6) Now we reconstruct the signal $\hat{Y}$ by taking a mean of all the approximations. The generated matrix $\mathbf{Yt}$ with size $M \times T$ can be used to approximate Y.
+
+\begin{equation}
+\hat{Y} =  \displaystyle\sum_{i=1}^{M} \mathbf{Yt}[i]
+\end{equation}
 
 Mention the trend is flat. What parameters do we pick for SSA.
-
+Mention the trend is flat. What parameters do we pick for SSA.
+Mention the trend is flat. What parameters do we pick for SSA.
+Mention the trend is flat. What parameters do we pick for SSA.
 
 \subsection{K-means}
 k-means is a partitioning clustering algorithm \cite{macqueen1967some, hartigan1979algorithm}. It starts with the k centroids user specified, and assigns the points to the nearest centroid. Then it computes the new k centroids and assign other points to these centroids again. The process repeats until it converges.
@@ -219,20 +225,22 @@ k-means is a partitioning clustering algorithm \cite{macqueen1967some, hartigan1
 \Output{Outliers}
 \BlankLine
 
-fftfreq $\leftarrow $ Discrete Fourier Transform sample frequencies\;
-fft $\leftarrow $ Discrete Fourier Transform\;
-len $\leftarrow $ size of $\lambda$\;
-frequencies $\leftarrow $ zero vector of size len\;
-fs $\leftarrow $ fftfreq($\lambda$)\;
-ix $\leftarrow $ indices that sort fs\;
-fs $\leftarrow $ fs[ix]\;
-\For{i in range(len)}{
-    p1 $\leftarrow $ abs(fft($\mathbf{P}$[:,i]))\;
-    ps $\leftarrow $ p1**2\;
-    ps $\leftarrow $ ps[ix]\;
-    frequencies[i] $\leftarrow $ fs[index of the maximum value in ps]\;
+outliers $\leftarrow$ empty\;
+df $\leftarrow$ ARM time series data\;
+data $\leftarrow$ df['atmos\_pressure','temp\_mean',\
+'rh\_mean','vapor\_pressure\_mean','wspd\_arith\_mean']\;
+number\_of\_clusters $\leftarrow$ 4\;
+clusters $\leftarrow$ K-means(data, number\_of\_clusters)\;
+distances $\leftarrow$ Distance between each point and its centroid\;
+mean $\leftarrow$ arithmetic mean of distances\;
+sigma $\leftarrow$ standard deviation of distances\;
+threshold $\leftarrow$ mean + 3 * sigma\;
+\For{i in range(length of distances)}{
+    \If{distances[i] $>$ threshold}{
+        outliers $\leftarrow$ outliers $\cup$ {distances[i]}
+    }
 }
-return abs(frequencies)
+\Return outliers
 \caption{K-means Outlier Detection}
 \end{algorithm}
 
