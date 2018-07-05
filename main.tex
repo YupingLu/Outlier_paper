@@ -41,19 +41,22 @@ Outlier Detection for ARM Data
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
 
-Outliers are common in ARM data. These outliers could be either an instrument failure or extreme weather event. Multiple methods are available to detect these outliers from the huge ARM datasets. We combined Pearson Correlation Coefficient, Singular Spectrum Analysis and K-means methods together as a whole framework to track down these outliers. Compared to the current outliers recorded in the DQR database, our results showed this framework is promising.
+The Atmospheric Radiation Measurement (ARM) Data Center collects data from either permanent or mobile facilities around the globe. These data are then ingested and used to create high level scientific products which requires great accuracy. Multiple methods are available to detect these outliers from ARM time series data. As outliers are common in the collected data which could be either an instrument failure or extreme weather event, Pearson Correlation Coefficient was first examined to measure the pairwise correlations between variables. New version of Singular Spectrum Analysis (SSA) was also introduced to detect outliers. K-means was applied in a different manner to filter out the abnormal records as well. Pearson Correlation Coefficient, SSA and K-means methods were later combined together as a whole framework to track down these outliers. Compared to the current data quality reports stored in the DQR database, our results showed this framework is promising.
 
 \end{abstract}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
+The Atmospheric Radiation Measurement (ARM) user facility was founded by the U.S. Department of Energy (DOE) in 1989 \cite{ARM}. Since then, its aim is to be the platforms for the observation and study of Earth's climate. Huge ARM datasets are collected from instruments deployed in different ground stations across the globe \cite{stokes1994atmospheric}. ARM Data Center is responsible for ingesting these collected data and creates high level scientific data products for distribution and the improvement of global climate models (GCMs) \cite{gaustad2014scientific}. These high level data products, also called "Value Added Products" (VAPs) are highly dependent on the correctness of the raw data. Thus it is crucial to detect those outliers in the raw data and correct them.
+
+As outliers are pretty common in these datasets. Currently, these datasets are checked manually and outliers are stored in Data Quality Report (DQR) database to be fixed. 
+
 We will use this section to introduce the background of outlier detection for time series data. \cite{gupta2014outlier} 
 
-The Atmospheric Radiation Measurement (ARM) user facility was founded by the U.S. Department of Energy (DOE) in 1989 \cite{gaustad2014scientific, ARM}. Since then, its aim is to be the platforms for the observation and study of Earth's climate. Huge ARM datasets are generated and stored in ARM data center daily. And outliers are pretty common in these datasets. Currently, these datasets are checked manually and outliers are stored in Data Quality Report (DQR) database to be fixed.
 
 \section{Datasets}
-ARM data center gathers data from multiple data sources. It ranges from \textit{Atmospheric Profiling} to \textit{Satellite Observations}. All these data are measured at different locations using different instruments. Each instrument may only work on a specified time range. For the raw netcdf dataset collected from each instrument, it contains multiple variables. In this paper, we only tested Surface Meteorology Systems (MET) data collected from the Southern Great Plains (SGP). There were total 24 instruments in SGP area and we chose 5 typical variables which are \textit{temp\_mean}, \textit{vapor\_pressure\_mean}, \textit{atmos\_pressure}, \textit{rh\_mean} and \textit{wspd\_arith\_mean} from multiple variables. Table 1 contains the detail of these datasets. 
+ARM data are stored in Network Common Data Form (NetCDF) format which is self-describing and machine-independent \cite{rew1990netcdf, NetCDF}. NetCDF format also has good performance and data compression. It is commonly used to handle scientific data, especially those from the climatology, meteorology, oceanography and GIS projects. ARM data is publicly available and can be downloaded from ARM Data Archive (http://www.archive.arm.gov). Kinds of raw data are stored in ARM Data Center. It ranges from \textit{Atmospheric Profiling} to \textit{Satellite Observations}. All these data are measured at different locations using different instruments. Each instrument may only work on a specified time range. For the raw NetCDF dataset collected from each instrument, it contains multiple variables. 
 
 \begin{table}[ht]
 \caption{SGPMET datasets tested}
@@ -80,16 +83,13 @@ End Year & 2017 & 2017 & 2017 & 2017 & 2017 & 2017\\
 \end{tabular}
 \end{table}
 
-ARM data are stored in Network Common Data Form (NetCDF) format which is self-describing and machine-independent \cite{rew1990netcdf, NetCDF}. NetCDF also has good performance and data compression. It is commonly used to handle scientific data, especially those from the climatology, meteorology, oceanography and GIS projects. The datasets we used in this paper are stored in minute level.
+In this paper, we only tested Surface Meteorology Systems (MET) data collected from the Southern Great Plains (SGP). There were total 24 instruments in SGP area and we chose 5 typical variables which are \textit{temp\_mean}, \textit{vapor\_pressure\_mean}, \textit{atmos\_pressure}, \textit{rh\_mean} and \textit{wspd\_arith\_mean} from multiple variables. Table 1 contains the detail of these datasets. 
 
 \section{Methodology}
-% mention the preprocessing, scale, average day value etc. where to mention preprocessing?
-We have introduced many kinds of outlier detection method in the first section. We carefully picked three algorithms and tested them on ARM data. Below we will talk about each algorithm in detail.
+We have introduced many kinds of outlier detection method in the first section. We carefully picked three algorithms and tested them on ARM data. We also did necessary preprocessing before running these algorithms. The first level raw data is stored in minute level. It is normalized for pairwise comparison algorithm. Some algorithms may not need so much detail information to extract outliers. Thus we created a second level data by averaging the 1440 minute data points into one day point from the raw data. The second level data can save a lot of running time and is easier for Plotly \cite{plotly} and Matplotlib \cite{Hunter:2007} to visualize. The third level data was especially created for multivariate method by standardization all the 5 variables into the same scale based on the second level data. Below we will talk about each algorithm in detail. 
 
 \subsection{Pearson Correlation Coefficient} 
 Pearson Correlation Coefficient was first introduced by Karl Pearson\cite{pearson1895note}. It is used to measure the linear correlation between two variables. Pearson correlation coefficient is calculated from the covariance of two variables divided by the multiplication of the standard deviation of those two variables. Thus the value falls in [-1, 1]. If the value is close to -1, it means those two variables are highly negatively related. On the other hand, then the two variables are strongly positively related. If the value is near 0, it means those two variables don't have linear relation. 
-
-PCC, mention those data are normally distributed.
 
 \begin{figure*}[ht]
     \centering
@@ -97,6 +97,9 @@ PCC, mention those data are normally distributed.
     \caption{Violin plot: Spring 5 variables from SGPMET}
     \label{fig:pc}
 \end{figure*}
+
+We performed pairwise comparison of the 5 variables using Pearson Correlation on all the instruments in a seasonal level. The result in figure 1 makes sense and all the correlations in this violin plot are normally distributed. For example, x5 the Pearson Correlation between \textit{temp\_mean} and \textit{vapor\_pressure\_mean} is positively correlated with correlation mean close to 0.75. x1 is negatively correlated with correlation mean close to -0.60. We used this correlation as base knowledge. If a pairwise pearson correlation of two variables from a specific season of a instrument falls out of that range, we treated that seasonal data as outliers.
+x1 is negatively correlated with correlation mean close to -0.60. We used this correlation as base knowledge. If a pairwise pearson correlation of two variables from a specific season of a instrument falls out of that range, we treated that seasonal data as outliers.
 
 \subsection{Singular Spectrum Analysis}
 Singular Spectrum Analysis (SSA) is a popular method for time series data analysis \cite{golyandina2013singular, golyandina2014basic}. The general idea is to use a subset of the decomposition of trajectory matrix to approximate it. Many applications can be found in \cite{golyandina2013singular}. For example, SSA can be applied to monitor volcanic activity \cite{bozzo2010relationship}. It can also be used to extract trend \cite{alexandrov2008method}. Different from the classic SSA method, we defined our own version of SSA to best work on ARM data. Figure 2 is a demonstration of the workflow of SSA. Below is the formal description of the algorithm.
@@ -205,8 +208,6 @@ fs $\leftarrow$ fs[ix]\;
 \hat{Y} =  \displaystyle\sum_{i=1}^{M} \mathbf{Yt}[i]
 \end{equation}
 
-% Is that line orange?
-% replace empty values with average values in SSA part 
 In this paper, we chose the temp\_mean data from instrument E33 as Y to illustrate SSA. Because SSA requires the time series data to be continuous, we replaced the empty points with the average temp\_mean value for that day in a year. 
 
 We set L = 400 and picked year and month as the periodicity groups G = [365, 30]. Thus TF = [0, 0.00273973, 0.03333333]. The generated matrix $\mathbf{Yt}$ has 3 rows after performing SSA. And $\hat{Y}$ = $\mathbf{Yt}[0]$ + $\mathbf{Yt}[1]$ + $\mathbf{Yt}[2]$. The residual is then extracted from the raw data R = Y - $\hat{Y}$. As $\hat{Y}$ is the approximation which is a "perfect" representation of Y. We then extracted the extreme values from the residual. Those extracted outliers are outliers. Figure 3 is a visualization of the result. The first row is the raw data Y. The orange line $\mathbf{Yt}[0]$ is the trend. As we can see, the trend is pretty flat from 2012 to 2017. The second row and third row are $\mathbf{Yt}[1]$, $\mathbf{Yt}[1]$ respectively. The Year data matches the pattern of the raw data. The last row is the residual. Those peak values outside the blue shaded area are outliers.
@@ -253,11 +254,11 @@ In this paper, we didn't stop after clustering ARM data with K-means. We transfo
     \label{fig:kmeans}
 \end{figure*}
 
-% add standardization here ?
 Again, we used data from instrument E33 as an example for K-means. Here we set k to 4 as each year has 4 seasons.  Figure 4 visualized the outliers detected from E33. Y axes in this figure is the distance metric. The pattern of these points is close to the raw data.
 
 \section{Results and Discussion}
-SSA is an univariate method. K-means is a multivariate method. Results and pics go here. Comparison metric: DQR database. 
+% mention the usage of python and implementation?
+SSA is an univariate method. K-means is a multivariate method. Results and pics go here. Comparison metric: DQR database \cite{mccord2016arm}. 
 
 Add the drawbacks of each algorithm and their strong parts.
 
@@ -307,6 +308,10 @@ Symmetric Difference & 674\\
 \hline
 \end{tabular}
 \end{table}
+
+More figures and results can be found on github. 
+%https://github.com/YupingLu/arm-pearson 
+%https://github.com/YupingLu/arm-ssa
 
 \section{Conclusions}
 After we compute those extreme values, use other methods to extract part of them as outliers?
