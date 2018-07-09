@@ -50,10 +50,22 @@ The Atmospheric Radiation Measurement (ARM) Data Center collects data from eithe
 \section{Introduction}
 The Atmospheric Radiation Measurement (ARM) user facility was founded by the U.S. Department of Energy (DOE) in 1989 \cite{ARM}. Since then, its aim is to be the platforms for the observation and study of Earth's climate. Huge ARM datasets are collected from instruments deployed in different ground stations across the globe \cite{stokes1994atmospheric}. ARM Data Center is responsible for ingesting these collected data and creates high level scientific data products for distribution and the improvement of global climate models (GCMs) \cite{gaustad2014scientific}. These high level data products, also called "Value Added Products" (VAPs) are highly dependent on the correctness of the raw data. Thus it is crucial to detect those outliers in the raw data and correct them.
 
-As outliers are pretty common in these datasets. Currently, these datasets are checked manually and outliers are stored in Data Quality Report (DQR) database to be fixed. 
+% The general definition of outlier detection and their types.
+Outlier detection, also called anomaly detection or intrusion detection, is a common task in many application domains which include time series data, streaming data, distributed data, spatio-temporal data, and network data \cite{gupta2014outlier}. Common techniques for outlier detection include signal processing, classification, clustering, nearest neighbor, density, statistical, information theory, spectral decomposition, and visualization. Among all these techniques, time series data outlier detection and temporal network outlier detection are especially useful for ARM data.
 
-We will use this section to introduce the background of outlier detection for time series data. \cite{gupta2014outlier} 
+% Outlier detection for time series data
+Outlier detection in time series data was first studies by Fox in 1972 \cite{fox1972outliers}. Common types of outlier are additive outliers, level shifts, temporary changes, and innovative outliers. One common approach is the discriminative method which is based on a similarity function. For example, normalized longest common subsequence (NLCS) is a similarity measurement widely used in the field of data mining \cite{budalakoti2009anomaly, chandola2008comparative, sequeira2002admit}. Commonly used clustering methods such as K-means \cite{macqueen1967some}, dynamic clustering \cite{sequeira2002admit}, single-linkage clustering \cite{portnoy2001intrusion}, Principal component analysis (PCA) \cite{gupta2013context}, and self-organizing map (SOM) \cite{gonzalez2003anomaly} are also 
 
+FSA and HMMs. 
+Supervised approaches. 
+
+% Outliers detection for temporal networks: graph, community etc. 
+Temporal data is a broad concept which include commercial transactions, sensor data, astronomy data, computer network traffic, medical records, judicial records, social network data and many others. Graph similarity metric \cite{papadimitriou2010web}. Jaccard similarity \cite{jay2012systematic}.
+
+% Application of outlier detection environmental sensor data
+Wind Speed Measurement Errors \cite{hill2007real, hill2010anomaly}
+Rain, Precipitation, Wave Heights \cite{kut2006spatio, angiulli2007detecting}
+Hurricanes, Floods and Rainfall Anomalies \cite{drosdowsky1993analysis, lu2004wavelet, lasaponara2006use}
 
 \section{Datasets}
 ARM data are stored in Network Common Data Form (NetCDF) format which is self-describing and machine-independent \cite{rew1990netcdf, NetCDF}. NetCDF format also has good performance and data compression. It is commonly used to handle scientific data, especially those from the climatology, meteorology, oceanography and GIS projects. ARM data is publicly available and can be downloaded from ARM Data Archive (http://www.archive.arm.gov). Kinds of raw data are stored in ARM Data Center. It ranges from \textit{Atmospheric Profiling} to \textit{Satellite Observations}. All these data are measured at different locations using different instruments. Each instrument may only work on a specified time range. For the raw NetCDF dataset collected from each instrument, it contains multiple variables. 
@@ -99,7 +111,6 @@ Pearson Correlation Coefficient was first introduced by Karl Pearson\cite{pearso
 \end{figure*}
 
 We performed pairwise comparison of the 5 variables using Pearson Correlation on all the instruments in a seasonal level. The result in figure 1 makes sense and all the correlations in this violin plot are normally distributed. For example, x5 the Pearson Correlation between \textit{temp\_mean} and \textit{vapor\_pressure\_mean} is positively correlated with correlation mean close to 0.75. x1 is negatively correlated with correlation mean close to -0.60. We used this correlation as base knowledge. If a pairwise pearson correlation of two variables from a specific season of a instrument falls out of that range, we treated that seasonal data as outliers.
-x1 is negatively correlated with correlation mean close to -0.60. We used this correlation as base knowledge. If a pairwise pearson correlation of two variables from a specific season of a instrument falls out of that range, we treated that seasonal data as outliers.
 
 \subsection{Singular Spectrum Analysis}
 Singular Spectrum Analysis (SSA) is a popular method for time series data analysis \cite{golyandina2013singular, golyandina2014basic}. The general idea is to use a subset of the decomposition of trajectory matrix to approximate it. Many applications can be found in \cite{golyandina2013singular}. For example, SSA can be applied to monitor volcanic activity \cite{bozzo2010relationship}. It can also be used to extract trend \cite{alexandrov2008method}. Different from the classic SSA method, we defined our own version of SSA to best work on ARM data. Figure 2 is a demonstration of the workflow of SSA. Below is the formal description of the algorithm.
@@ -134,7 +145,7 @@ Singular Spectrum Analysis (SSA) is a popular method for time series data analys
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{E33.png}
-    \caption{Example of SSA application on ARM data. The full decomposition of temp\_mean data from instrument E33.}
+    \caption{Example of SSA application on ARM data. The full decomposition of \textit{temp\_mean} data from instrument E33.}
     \label{fig:ssa}
 \end{figure*}
 
@@ -257,22 +268,37 @@ In this paper, we didn't stop after clustering ARM data with K-means. We transfo
 Again, we used data from instrument E33 as an example for K-means. Here we set k to 4 as each year has 4 seasons.  Figure 4 visualized the outliers detected from E33. Y axes in this figure is the distance metric. The pattern of these points is close to the raw data.
 
 \section{Results and Discussion}
-% mention the usage of python and implementation?
-SSA is an univariate method. K-means is a multivariate method. Results and pics go here. Comparison metric: DQR database \cite{mccord2016arm}. 
+% mention the usage of python and implementation. % add three sigma rule here.
+The three algorithms and visualizations are implemented in Python in this paper. All codes and results are available on GitHub (https://github.com/YupingLu/arm-pearson and https://github.com/YupingLu/arm-ssa). Multiple methods are available to set a threshold for extreme values as outliers. We used the three sigma rule to extract outliers \cite{pukelsheim1994three}. For example, if the distance one point is larger than three sigmas, we treat this point as an outlier in algorithm 2.
 
-Add the drawbacks of each algorithm and their strong parts.
+% methods drawbacks and advantages
+Pearson Correlation Coefficient is a pairwise comparison method which is used to detect abnormality of correlation between two variables. However if the two variables suddenly change in the same direction, their correlation may still be normal similar to their "supposed" value. It is the same case if only a few outlier points inside a big quantity of data points. As we performed the Pearson Correlation Coefficient on the seasonal level, it's not possible to track down to the exact day. SSA is a univariate method to detect outliers for each variable in the ARM data. It can quickly catch those high peak and drop points. But it requires the time series data to be continuous with no missing points. K-means is a commonly used multivariate method for clustering. Here we used it for outlier detection. The problem is that the detected outliers could be just one type of variable or multiple types of variable. It's hard to tell which is the case and get the detail for future correction.
 
-% add three sigma rule here
-How do you pick extreme values as outliers? Some methods do not work. Here we use the three sigma rule to extract outliers \cite{pukelsheim1994three}.
-
-Precision and recall was first defined in \cite{perry1955machine}. It is commonly used to measure the quality of classification tasks \cite{olson2008advanced}. Precision is calculated from True Positives divided by the sum of True Positives and False Positives. On the other hand, recall is measured from True Positives divided by the sum of True Positives and False Negatives. In this paper, detected outliers in the DQR database are the ground truth. So we treated these as True Positives. Thus detected outliers not in the DQR database are False Positives. Undetected values which in the DQR database are False Negatives, and which not in the DQR database are True Negatives. Analysis of table 2 and 3 goes here.
+% all together as a template
+One outlier may only be detected by SSA or Pearson Correlation Coefficient or K-means. Thus we combined all the three methods together as a whole framework. SSA and K-means are used directed to detect outliers. Pearson Correlation Coefficient can mainly be used to detect the main variables caused the anomaly from the SSA results by comparing the pairwise correlations. Figure 5 shows the result of detected outliers for \textit{temp\_mean} from E33. The red squares stand for the common outliers detected by both K-means and SSA. The orange diamonds are the ones detected by K-means excluding the common outliers. And the black stars represents the outliers detected by SSA excluding the common outliers. We can see from the figure that more outliers have been detected compared to figure 3 and figure 4. Thus we applied this framework on all the test data. Table 2 shows the number of detected outliers. The size of common detected outliers is 378 by this framework.
 
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{combined.png}
-    \caption{E33 temp\_mean combined}
+    \caption{Outliers detected for E33 \textit{temp\_mean} using combined algorithms}
     \label{fig:combined}
 \end{figure*}
+
+\begin{table}[ht]
+\caption{Comparison of SSA and K-means Outlier Set Size}
+\label{tab:comp}
+\centering
+\begin{tabular}{|l|c|}
+\cline{2-2}
+\multicolumn{1}{l|}{} & Outlier Set Size\\
+\hline
+SSA & 922\\
+K-means & 508\\
+Intersection & 378\\
+Symmetric Difference & 674\\
+\hline
+\end{tabular}
+\end{table}
 
 \begin{table}[ht]
 \caption{Precision and Recall of SSA and K-means}
@@ -293,30 +319,15 @@ Combined & 5 together & 11.10\% & 4.10\%\\
 \end{tabular}
 \end{table}
 
-\begin{table}[ht]
-\caption{Comparison of SSA and K-means Outlier Set Size}
-\label{tab:comp}
-\centering
-\begin{tabular}{|l|c|}
-\cline{2-2}
-\multicolumn{1}{l|}{} & Outlier Set Size\\
-\hline
-SSA & 922\\
-K-means & 508\\
-Intersection & 378\\
-Symmetric Difference & 674\\
-\hline
-\end{tabular}
-\end{table}
+% DQR here
+The current data quality or outlier detection is maintained as data quality reports (DQRs) stored in the DQR database with each entry manually entered \cite{mccord2016arm}. A description of an event which changed the normal data is included in these DQRs. The event could be temporary operating conditions such as power failures and frozen and snow covered sensors, instrument degradation, and contamination. It could also be an extreme weather event that has never been observed before. Each DQR entry also contains a specific time range affected, list of data projects, and specific measurements. And these entries are usually submitted by either the Data Quality Office \cite{peppler2016arm} or the instrument mentor \cite{cress2016deploying}. It is easy to notice that this method is not efficient as it requires a lot of labor. It is nearly also impossible to detect all the outliers due to the complexity and high volume of the ARM data.
 
-More figures and results can be found on github. 
-%https://github.com/YupingLu/arm-pearson 
-%https://github.com/YupingLu/arm-ssa
+Currently, not many outliers entries stored in DQR database. Here we used detected outliers in the DQR database as the ground truth to compare with the results from our framework. Precision and recall which were first defined in \cite{perry1955machine} were used as the comparison metric. They are commonly used to measure the quality of classification tasks \cite{olson2008advanced}. Precision is calculated from True Positives divided by the sum of True Positives and False Positives. On the other hand, recall is measured from True Positives divided by the sum of True Positives and False Negatives. We treated outliers in DQR database as True Positives. Thus detected outliers not in the DQR database are False Positives. Undetected values which in the DQR database are False Negatives, and which not in the DQR database are True Negatives. Table 3 contains the statistics of the comparison.
+
+Precision attempts to answer What proportion of positive identifications was actually correct. The Combined precision is 11.10\% which shows that many outliers detected by the framework are not in the DQR database. Recall tries to solve What proportion of actual positives was identified correctly. The number is 4.10\% which is even smaller than precision. One reason is the same as precision that the size of True Positives is much small. The other reason is that DQR database records the whole possible affected time range which makes the size of False Negatives large. It could possible only a few days the data recorded are wrong.
 
 \section{Conclusions}
-After we compute those extreme values, use other methods to extract part of them as outliers?
-We presented a combined model to detect outliers for ARM data. Future work: 
-ML and tried methods working on multiple instruments multiple sites \cite{phillips2015graph}.
+In this paper we tested pairwise Pearson Correlation Coefficient, univariate SSA and multivariate K-means and combined them as a framework to detect outliers in the ARM data. Each method has its own drawbacks. But our experiments showed that this framework works well compared to the manually Data Quality Report method. Currently, we only tested MET data from SGP. And we analyzed data from each instrument independently. We'll apply this framework on other types of data from other facilities in the future. Meanwhile, other methods will be examined to test data from multiple instruments together such as graph theory methods \cite{phillips2015graph} and machine learning methods. 
 
 %\addtolength{\textheight}{-12cm}  % This command serves to balance the column lengths
                                   % on the last page of the document manually. It shortens
