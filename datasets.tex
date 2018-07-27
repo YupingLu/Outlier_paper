@@ -1,0 +1,31 @@
+\section{Datasets}
+ARM data is stored in the Network Common Data Form (NetCDF) format which is self-describing and machine-independent \cite{rew1990netcdf, NetCDF} and has good performance and data compression. It is commonly used to handle scientific data, especially those from the climatology, meteorology, oceanography and GIS projects. ARM data is publicly available and can be downloaded from ARM Data Archive (http://www.archive.arm.gov) where many forms of raw data are stored in ARM Data Center ranging from \textit{Atmospheric Profiling} to \textit{Satellite Observations}. All the data is measured at different locations using different instruments. Each instrument may only work on a specified time range. For the raw NetCDF dataset collected from each instrument, it contains multiple variables. 
+
+\begin{table}[ht]
+\caption{SGPMET datasets tested}
+\label{tab:datasets}
+\centering
+\begin{tabular}{|l|c|c|c|c|c|c|c|c|}
+\hline
+Instrument & E1 & E3 & E4 & E5 & E6 & E7\\
+Begin Year & 1996 & 1997 & 1996 & 1997 & 1997 & 1996\\
+End Year & 2008 & 2008 & 2010 & 2008 & 2010 & 2011\\
+\hline
+Instrument & E8 & E9 & E11 & E13 & E15 & E20\\
+Begin Year & 1994 & 1994 & 1996 & 1994 & 1994 & 1994\\
+End Year & 2008 & 2017 & 2017 & 2017 & 2017 & 2010\\
+\hline
+Instrument & E21 & E24 & E25 & E27 & E31 & E32\\
+Begin Year & 2000 & 1996 & 1997 & 2004 & 2012 & 2012\\
+End Year & 2017 & 2008 & 2001 & 2009 & 2017 & 2017\\
+\hline
+Instrument & E33 & E34 & E35 & E36 & E37 & E38\\
+Begin Year & 2012 & 2012 & 2012 & 2012 & 2012 & 2012\\
+End Year & 2017 & 2017 & 2017 & 2017 & 2017 & 2017\\
+\hline
+\end{tabular}
+\end{table}
+
+In this paper, we tested the Surface Meteorology Systems (MET) data collected from the Southern Great Plains (SGP). There are a total of 24 instruments in the SGP area from which we chose 5 typical variables: \textit{temp\_mean}, \textit{vapor\_pressure\_mean}, \textit{atmos\_pressure}, \textit{rh\_mean} and \textit{wspd\_arith\_mean}. Table~\ref{tab:datasets} contains the details of these datasets. 
+
+
