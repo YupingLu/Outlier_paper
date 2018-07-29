@@ -1,8 +1,30 @@
 \section{Methodology}
-From the many outlier detection methods introduced in the first section, we carefully picked Pearson correlation coefficient, Singular Spectrum Analysis and K-means and tested them on ARM data. The various algorithms required differing levels of preprocessing. The first level raw data was stored in minute level. It was normalized for pairwise comparison algorithm. Some algorithms might not need so much detail information to extract outliers. Thus we created a second level data by averaging the 1440 minute data points into one day point from the raw data. The second level data could save a lot of running time and is easier for Plotly \cite{plotly} and Matplotlib \cite{Hunter:2007} to visualize. The third level data was especially created for multivariate method by standardization all the 5 variables into the same scale based on the second level data. Below we will talk about each algorithm in detail. 
+From the many outlier detection methods introduced in the first section,
+we carefully selected Pearson correlation coefficient, Singular
+Spectrum Analysis and K-means and tested them on ARM data. The
+various algorithms required differing levels of preprocessing. The
+first level raw data was stored in minute level. It was normalized
+for pairwise comparison algorithm. Some algorithms might not need
+so much detail information to extract outliers. Thus we created a
+second level data by averaging the 1440 minute data points into one
+day point from the raw data. The second level data could save a lot
+of running time and is easier for Plotly \cite{plotly} and
+Matplotlib \cite{Hunter:2007} to visualize. The third level data
+was especially created for multivariate method by standardization
+all the 5 variables into the same scale based on the second level
+data. Below we will talk about each algorithm in detail. 
 
 \subsection{Pearson correlation coefficient} 
-The Pearson correlation coefficient was first introduced by Karl Pearson\cite{pearson1895note}. It is used to measure the linear correlation between two variables. The Pearson correlation coefficient is calculated from the covariance of two variables divided by the multiplication of the standard deviation of those two variables. This normalization results in a value between [-1, 1]. If the value is close to -1, it means those two variables are highly negatively related. On the other hand, then the two variables are strongly positively related. If the value is near 0, it means those two variables do not have linear relation. 
+The Pearson correlation coefficient was first introduced by Karl
+Pearson\cite{pearson1895note}. It is used to measure the linear
+correlation between two variables. The Pearson correlation coefficient
+is calculated from the covariance of two variables divided by the
+multiplication of the standard deviation of those two variables. This
+normalization results in a value between [-1, 1]. If the value is close
+to -1, it means those two variables are highly negatively related. On
+the other hand, then the two variables are strongly positively related.
+If the value is near 0, it means those two variables do not have linear
+relation. 
 
 \begin{figure*}[ht]
     \centering
@@ -11,10 +33,36 @@ The Pearson correlation coefficient was first introduced by Karl Pearson\cite{pe
     \label{fig:pc}
 \end{figure*}
 
-We performed a pairwise comparison of the 5 variables using Pearson correlation on all the instruments on a seasonal level. The result is in Figure~\ref{fig:pc} and all the correlations in this violin plot are normally distributed. For example, the Pearson correlation between \textit{temp\_mean} and \textit{vapor\_pressure\_mean} is positively correlated with correlation mean close to 0.75. And the Pearson correlation between \textit{atmos\_pressure} and \textit{temp\_mean} is negatively correlated with correlation mean close to -0.60. These highly correlated Pearson correlation coefficients are stored as the expected values between two variables. We then compare each Pearson correlation of two variables from a specific season in a specific year from a specific instrument individually. If this pairwise Pearson correlation of two variables deviates far away from our stored base knowledge, we treat it as an outlier. We can also use this method to check whether the upcoming data contains outliers.
+We performed a pairwise comparison of the 5 variables using Pearson
+correlation on all the instruments on a seasonal level. The result is in
+Figure~\ref{fig:pc} and all the correlations in this violin plot are
+normally distributed. For example, the Pearson correlation between
+\textit{temp\_mean} and \textit{vapor\_pressure\_mean} is positively
+correlated with correlation mean close to 0.75. And the Pearson
+correlation between \textit{atmos\_pressure} and \textit{temp\_mean} is
+negatively correlated with correlation mean close to -0.60. These highly
+correlated Pearson correlation coefficients are stored as the expected
+values between two variables. We then compare each Pearson correlation
+of two variables from a specific season in a specific year from a
+specific instrument individually. If this pairwise Pearson correlation
+of two variables deviates far away from our stored base knowledge, we
+treat it as an outlier. We can also use this method to check whether the
+upcoming data contains outliers.
 
 \subsection{Singular Spectrum Analysis}
-Singular Spectrum Analysis (SSA) is a popular method for time series data analysis \cite{golyandina2013singular, golyandina2014basic}. The general idea is to use a subset of the decomposition of trajectory matrix to approximate the original data. Many applications can be found in \cite{golyandina2013singular}. For example, SSA can be applied to monitor volcanic activity \cite{bozzo2010relationship}. It can also be used to extract trend \cite{alexandrov2008method}. Different from the classic SSA method, we defined our own version of SSA which is designed to remove any number of modes of specified periodicity from the time series. This is meant to remove known seasonalities from the data to better isolate true anomalous values. We provided a schematic of the algorithm used in Figure~\ref{fig:pcs} and a sample application in Figure~\ref{fig:ssa}.
+Singular Spectrum Analysis (SSA) is a popular method for time series
+data analysis \cite{golyandina2013singular, golyandina2014basic}. The
+general idea is to use a subset of the decomposition of trajectory
+matrix to approximate the original data. Many applications can be found
+in \cite{golyandina2013singular}. For example, SSA can be applied to
+monitor volcanic activity \cite{bozzo2010relationship}. It can also be
+used to extract trend \cite{alexandrov2008method}. Different from the
+classic SSA method, we defined our own version of SSA which is designed
+to remove any number of modes of specified periodicity from the time
+series. This is meant to remove known seasonalities from the data to
+better isolate true anomalous values. We provided a schematic of the
+algorithm used in Figure~\ref{fig:pcs} and a sample application in
+Figure~\ref{fig:ssa}.
 
 % SSA workflow
 \begin{figure}[ht]
@@ -76,7 +124,20 @@ where $x_{ij} = y_{i+j-1}$. We can see from equation 1 that matrix \textbf{X} ha
 \end{equation}
 where $\mathbf{X_i} = \sqrt{\lambda_i} P_i V_i^T$.
 
-Next we choose a subset of eigenpairs to form an approximation of the trajectory matrix. It is at this point that our version of the algorithm differs. Given that the time series we are studying has seasonality at known frequencies, we use Fast Fourier transform (FFT) to find the dominant frequency of each eigenvector \cite{cooley1965algorithm}. We then approximate the trajectory matrix by including modes which match the frequencies of the seasonality we wish to remove. For example, we anticipate that the temperature data will have a annual and possibly monthly cycle, as shown in Figure~\ref{fig:ssa}. SSA allows us to tease out these contributions in additive fashion. In this example, the signals from the year, month, and residual sum together to form the original raw data. This residual is then the noise in the raw data with the seasonality removed as doing so exposes large anomalies which are possible outliers. %Algorithm 1 shows the whole process.
+Next we choose a subset of eigenpairs to form an approximation of the
+trajectory matrix. It is at this point that our version of the algorithm
+differs. Given that the time series we are studying has seasonality at
+known frequencies, we use Fast Fourier transform (FFT) to find the
+dominant frequency of each eigenvector \cite{cooley1965algorithm}. We
+then approximate the trajectory matrix by including modes which match
+the frequencies of the seasonality we wish to remove. For example, we
+anticipate that the temperature data will have a annual and possibly
+monthly cycle, as shown in Figure~\ref{fig:ssa}. SSA allows us to tease
+out these contributions in additive fashion. In this example, the
+signals from the year, month, and residual sum together to form the
+original raw data. This residual is then the noise in the raw data with
+the seasonality removed as doing so exposes large anomalies which are
+possible outliers. %Algorithm 1 shows the whole process.
 
 %\begin{algorithm}[ht]
 %\DontPrintSemicolon
@@ -105,18 +166,39 @@ Next we choose a subset of eigenpairs to form an approximation of the trajectory
 %\caption{Dominant Frequency Finder}
 %\end{algorithm}
 
-Once the eigenpairs are chosen, we proceed with the classical definition of the method. If $I$ represents a set of indices corresponding to the eigenmodes to remove, we approximate the trajectory matrix
+Once the eigenpairs are chosen, we proceed with the classical definition
+of the method. If $I$ represents a set of indices corresponding to the
+eigenmodes to remove, we approximate the trajectory matrix
 %
 \begin{equation*}
     \mathbf{Xt} = \sum_{i\in I} \mathbf{X_i}
 \end{equation*}
 %
-An approximation $Yt$ to the original signal $Y$ can be obtained from $\mathbf{Xt}$ by inverting the process used to form the trajectory matrix, Equation~\eqref{e:traj}. Each column of $\mathbf{Xt}$ represents a shifted approximation to $Yt$, thus we average each shifted column. Finally the deseasonalized residual is the difference between the original signal and the reconstruction, $R=Y-Yt$.
+An approximation $Yt$ to the original signal $Y$ can be obtained from
+$\mathbf{Xt}$ by inverting the process used to form the trajectory
+matrix, Equation~\eqref{e:traj}. Each column of $\mathbf{Xt}$ represents
+a shifted approximation to $Yt$, thus we average each shifted column.
+Finally the deseasonalized residual is the difference between the
+original signal and the reconstruction, $R=Y-Yt$.
 
-In this paper, we chose the \textit{temp\_mean} data from instrument E33 as $Y$ to illustrate SSA. Because SSA requires the time series data to be continuous, we replaced the empty points with the average temp\_mean value for that day in a year. We set $L = 400$ and picked a single year and month as the periodicity groups. Thus $Yt = Yt[0] + Yt[1] + Yt[2]$. Figure~ \ref{fig:ssa} is a visualization of the result. The first row is the raw data $Y$. The orange line $Yt[0]$ is the trend. As we can see from the figure, the trend is pretty flat from 2012 to 2017. The second row and third row are $Yt[1]$, $Yt[2]$ respectively. The Year data matches the pattern of the raw data. The last row is the residual. Those peak values outside the blue shaded area are outliers.
+In this paper, we chose the \textit{temp\_mean} data from instrument E33
+as $Y$ to illustrate SSA. Because SSA requires the time series data to
+be continuous, we replaced the empty points with the average temp\_mean
+value for that day in a year. We set $L = 400$ and picked a single year
+and month as the periodicity groups. Thus $Yt = Yt[0] + Yt[1] + Yt[2]$.
+Figure~ \ref{fig:ssa} is a visualization of the result. The first row is
+the raw data $Y$. The orange line $Yt[0]$ is the trend. As we can see
+from the figure, the trend is pretty flat from 2012 to 2017. The second
+row and third row are $Yt[1]$, $Yt[2]$ respectively. The Year data
+matches the pattern of the raw data. The last row is the residual. Those
+peak values outside the blue shaded area are outliers.
 
 \subsection{K-means}
-K-means is a partitioning clustering algorithm \cite{macqueen1967some, hartigan1979algorithm}. It starts with the k centroids user specified, and assigns the points to the nearest centroid. Then it computes new k centroids and assign the rest points to these centroids again. The process repeats until it converges. 
+K-means is a partitioning clustering algorithm \cite{macqueen1967some,
+hartigan1979algorithm}. It starts with the k centroids user
+specified, and assigns the points to the nearest centroid. Then it
+computes new k centroids and assign the rest points to these
+centroids again. The process repeats until it converges. 
 
 % K-means algorithm
 \begin{algorithm}[ht]
@@ -148,7 +230,13 @@ threshold $\leftarrow$ mean + 3 * sigma\;
 \caption{K-means Outlier Detection}\label{alg:kmeans}
 \end{algorithm}
 
-In this paper, we did not stop after clustering ARM data with K-means. We transformed the generated clusters into a vector of distance between each point and its corresponding centroid. If the distance of a point is larger than the threshold, this point will be filtered out as an outlier. Algorithm~\ref{alg:kmeans} describes the whole process. Unlike SSA, we used all the 5 variables mentioned in Datasets section together to extract outliers.
+In this paper, we did not stop after clustering ARM data with K-means.
+We transformed the generated clusters into a vector of distance between
+each point and its corresponding centroid. If the distance of a point is
+larger than the threshold, this point will be filtered out as an
+outlier. Algorithm~\ref{alg:kmeans} describes the whole process. Unlike
+SSA, we used all the 5 variables mentioned in Datasets section together
+to extract outliers.
 
 \begin{figure*}[ht]
     \centering
@@ -157,6 +245,10 @@ In this paper, we did not stop after clustering ARM data with K-means. We transf
     \label{fig:kmeans}
 \end{figure*}
 
-Again, we used data from instrument E33 as an example for K-means. Here we set k to 4 as each year has 4 seasons.  Figure~\ref{fig:kmeans} visualized the outliers detected from E33. Y axes in this figure is the distance metric. Those red squares which are far away from the centroids are outliers.
+Again, we used data from instrument E33 as an example for K-means. Here
+we set k to 4 as each year has 4 seasons.  Figure~\ref{fig:kmeans}
+visualized the outliers detected from E33. Y axes in this figure is the
+distance metric. Those red squares which are far away from the centroids
+are outliers.
 
 

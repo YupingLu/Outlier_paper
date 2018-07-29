@@ -1,8 +1,20 @@
 \section{Datasets}
-ARM data is stored in the Network Common Data Form (NetCDF) format which is self-describing and machine-independent \cite{rew1990netcdf, NetCDF} and has good performance and data compression. It is commonly used to handle scientific data, especially those from the climatology, meteorology, oceanography and GIS projects. ARM data is publicly available and can be downloaded from ARM Data Archive (http://www.archive.arm.gov) where many forms of raw data are stored in ARM Data Center ranging from \textit{Atmospheric Profiling} to \textit{Satellite Observations}. All the data is measured at different locations using different instruments. Each instrument may only work on a specified time range. For the raw NetCDF dataset collected from each instrument, it contains multiple variables. 
+ARM data are stored and distributed in the Network Common Data Form (NetCDF) format which
+is self-describing and machine-independent \cite{rew1990netcdf, NetCDF}
+and has good performance and data compression. It is commonly used to
+handle scientific data, especially those from the climatology,
+meteorology, oceanography and GIS projects. All ARM data are publicly
+available and can be downloaded from ARM Data Archive
+(http://www.archive.arm.gov) where a large range of datasets ranging  
+from meteorology, to atmospheric profiles, to weather radars to
+satellite observations are available. Datasets are collected at a number
+of different locations using large number of diverse
+instruments. %Each instrument may only work on a specified
+%time range. For the raw NetCDF dataset collected from each
+%instrument, it contains multiple variables. 
 
 \begin{table}[ht]
-\caption{SGPMET datasets tested}
+\caption{SGPMET datasets used in this study}
 \label{tab:datasets}
 \centering
 \begin{tabular}{|l|c|c|c|c|c|c|c|c|}
@@ -26,6 +38,22 @@ End Year & 2017 & 2017 & 2017 & 2017 & 2017 & 2017\\
 \end{tabular}
 \end{table}
 
-In this paper, we tested the Surface Meteorology Systems (MET) data collected from the Southern Great Plains (SGP). There are a total of 24 instruments in the SGP area from which we chose 5 typical variables: \textit{temp\_mean}, \textit{vapor\_pressure\_mean}, \textit{atmos\_pressure}, \textit{rh\_mean} and \textit{wspd\_arith\_mean}. Table~\ref{tab:datasets} contains the details of these datasets. 
+In this study, we used the data from Surface Meteorology Systems (MET)
+collected at the ARM Southern Great Plains (SGP) site in
+Oklohoma, United States. SGP is ARM's largest and central facility and
+comprises of a network of core and extended facilities. In our study we
+used MET data from 24 extended facilities where surface meterological
+observations have been collected continuously and independently. 
+While MET instruments collect a large array of direct and indirect
+measurements, we focused on our analysis on five core meterological variables:
+air temperature (\textit{temp\_mean}), vapor pressure
+(\textit{vapor\_pressure\_mean}),
+atmospheric pressure (\textit{atmos\_pressure}), relative humidity
+(\textit{rh\_mean}) and wind speed
+\textit{wspd\_arith\_mean}. These five core meteorological variables are
+inputs for a large number of derived datasets produced by the ARM and
+are often essential set of data for most atmospheric analysis, hence
+focus of our study. Table~\ref{tab:datasets} provides details of sites
+and available time series for the datasets used.
 
 
