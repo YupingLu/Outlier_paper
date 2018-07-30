@@ -1,7 +1,10 @@
 \section{Methodology}
 From the many outlier detection methods introduced in the first section,
 we carefully selected Pearson correlation coefficient, Singular
-Spectrum Analysis and K-means and tested them on ARM data. The
+Spectrum Analysis and K-means and tested them on ARM data. 
+
+%% NOTE: the text below requires some rewording --Jitu
+The
 various algorithms required differing levels of preprocessing. The
 first level raw data was stored in minute level. It was normalized
 for pairwise comparison algorithm. Some algorithms might not need
@@ -14,9 +17,19 @@ was especially created for multivariate method by standardization
 all the 5 variables into the same scale based on the second level
 data. Below we will talk about each algorithm in detail. 
 
-\subsection{Pearson correlation coefficient} 
+\subsection{Pearson correlation coefficient}
+Co-located meteorological variables measure different aspect of the
+atmopheric conditions at any location, and driven by atmospheric physics
+are inherently correlated with each others. Any atmospheric phenomena at
+the location would be expected to affect all variables in an expected
+and correlated fashion.  Analysis of historical time
+series data would provide us the baseline correlation structure and
+patterns for the location. In addition, any abrupt change or break in
+correlation structure among meteorological behavior can be a sign of
+sensor malfunction and can be identified a outlier. 
+
 The Pearson correlation coefficient was first introduced by Karl
-Pearson\cite{pearson1895note}. It is used to measure the linear
+Pearson\cite{pearson1895note} and can be used to measure the linear
 correlation between two variables. The Pearson correlation coefficient
 is calculated from the covariance of two variables divided by the
 multiplication of the standard deviation of those two variables. This
@@ -33,10 +46,16 @@ relation.
     \label{fig:pc}
 \end{figure*}
 
-We performed a pairwise comparison of the 5 variables using Pearson
-correlation on all the instruments on a seasonal level. The result is in
-Figure~\ref{fig:pc} and all the correlations in this violin plot are
-normally distributed. For example, the Pearson correlation between
+We performed a pairwise comparison of the five variables using Pearson
+correlation using data from all 24 extended sites. Atomospheric
+dynamics are strongly driven by seasons and the correlation patterns
+among meteorological variables can have season specific patterns. We
+performed our analysis seasonally by separating the data among Winter, Spring,
+Summer and Fall seasons. Figure~\ref{fig:pc} show the distribution of
+pairwise correlation for Spring season. All variables show strong
+correlations whcih are normally distributed. The long tails of the
+distribution are potentially due to outlier data points. 
+For example, the Pearson correlation between
 \textit{temp\_mean} and \textit{vapor\_pressure\_mean} is positively
 correlated with correlation mean close to 0.75. And the Pearson
 correlation between \textit{atmos\_pressure} and \textit{temp\_mean} is
