@@ -21,12 +21,12 @@ data. Below we will talk about each algorithm in detail.
 Co-located meteorological variables measure different aspect of the
 atmospheric conditions at any location, and driven by atmospheric physics
 are inherently correlated with each others. Any atmospheric phenomena at
-the location would be expected to affect all variables in an expected
+the location would affect all variables in an expected
 and correlated fashion.  Analysis of historical time
 series data would provide us the baseline correlation structure and
 patterns for the location. In addition, any abrupt change or break in
 correlation structure among meteorological behavior can be a sign of
-sensor malfunction and can be identified a outlier. 
+sensor malfunction and should be identified a outlier. 
 
 The Pearson correlation coefficient was first introduced by Karl
 Pearson\cite{pearson1895note} and can be used to measure the linear
@@ -42,7 +42,8 @@ relation.
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{figures/Spring.png}
-    \caption{Violin plot: Spring 5 variables from SGPMET}
+    \caption{Correlation patterns for five meteorological variables
+		during spring season.}
     \label{fig:pc}
 \end{figure*}
 
@@ -64,11 +65,21 @@ correlated Pearson correlation coefficients are stored as the expected
 values between two variables. We then compare each Pearson correlation
 of two variables from a specific season in a specific year from a
 specific instrument individually. If this pairwise Pearson correlation
-of two variables deviates far away from our stored base knowledge, we
-treat it as an outlier. We can also use this method to check whether the
-upcoming data contains outliers.
+of two variables deviates far away from our expected historical
+correlation, we treat it as an outlier. This method would allow to check
+incoming datastream on near-real-time basis to identify outliers.
 
 \subsection{Singular Spectrum Analysis}
+Univariate time series analysis of meteorological variables can be
+applied to identify any unexpected variability and extreme values
+observed by the instruments. These anamolous observations can be
+indicative of extreme atmospheric events at the site and are important
+to identify. However, a range of natural inter- and intra-annual variability in
+meterological times series is also expected and it's important to not
+erroneously flag them as outliers. We applied Singular Spectrum Analysis
+for time series of analysis of meteorological observations to identify
+exteme events.
+
 Singular Spectrum Analysis (SSA) is a popular method for time series
 data analysis \cite{golyandina2013singular, golyandina2014basic}. The
 general idea is to use a subset of the decomposition of trajectory
