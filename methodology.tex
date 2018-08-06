@@ -19,7 +19,7 @@ data. Below we will talk about each algorithm in detail.
 
 \subsection{Pearson correlation coefficient}
 Co-located meteorological variables measure different aspect of the
-atmopheric conditions at any location, and driven by atmospheric physics
+atmospheric conditions at any location, and driven by atmospheric physics
 are inherently correlated with each others. Any atmospheric phenomena at
 the location would be expected to affect all variables in an expected
 and correlated fashion.  Analysis of historical time
@@ -47,13 +47,13 @@ relation.
 \end{figure*}
 
 We performed a pairwise comparison of the five variables using Pearson
-correlation using data from all 24 extended sites. Atomospheric
+correlation using data from all 24 extended sites. Atmospheric
 dynamics are strongly driven by seasons and the correlation patterns
 among meteorological variables can have season specific patterns. We
 performed our analysis seasonally by separating the data among Winter, Spring,
 Summer and Fall seasons. Figure~\ref{fig:pc} show the distribution of
 pairwise correlation for Spring season. All variables show strong
-correlations whcih are normally distributed. The long tails of the
+correlations which are normally distributed. The long tails of the
 distribution are potentially due to outlier data points. 
 For example, the Pearson correlation between
 \textit{temp\_mean} and \textit{vapor\_pressure\_mean} is positively
@@ -78,10 +78,10 @@ monitor volcanic activity \cite{bozzo2010relationship}. It can also be
 used to extract trend \cite{alexandrov2008method}. Different from the
 classic SSA method, we defined our own version of SSA which is designed
 to remove any number of modes of specified periodicity from the time
-series. This is meant to remove known seasonalities from the data to
-better isolate true anomalous values. We provided a schematic of the
-algorithm used in Figure~\ref{fig:pcs} and a sample application in
-Figure~\ref{fig:ssa}.
+series. This is meant to remove known seasonalities from the data in 
+order to isolate true anomalous values more accurately. We provided a 
+schematic of the algorithm used in Figure~\ref{fig:pcs} and a sample 
+application in Figure~\ref{fig:ssa}.
 
 % SSA workflow
 \begin{figure}[ht]
