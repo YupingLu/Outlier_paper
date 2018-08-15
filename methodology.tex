@@ -1,26 +1,25 @@
 \section{Methodology}
 From the many outlier detection methods introduced in the first section,
 we carefully selected Pearson correlation coefficient, Singular
-Spectrum Analysis and K-means and tested them on ARM data. 
+Spectrum Analysis and K-means for our study and tested them on ARM data. 
 
 %% NOTE: the text below requires some rewording --Jitu
-The
-various algorithms required differing levels of preprocessing. The
-first level raw data was stored in minute level. It was normalized
+The various algorithms required differing levels of preprocessing. The
+first level raw data was stored in minute resolution. It was normalized
 for pairwise comparison algorithm. Some algorithms might not need
 so much detail information to extract outliers. Thus we created a
-second level data by averaging the 1440 minute data points into one
+second level data by averaging the minute data points into one
 day point from the raw data. The second level data could save a lot
 of running time and is easier for Plotly \cite{plotly} and
 Matplotlib \cite{Hunter:2007} to visualize. The third level data
-was especially created for multivariate method by standardization
+was specifically created for multivariate analysis by standardization
 all the 5 variables into the same scale based on the second level
 data. Below we will talk about each algorithm in detail. 
 
 \subsection{Pearson correlation coefficient}
 Co-located meteorological variables measure different aspect of the
-atmospheric conditions at any location, and driven by atmospheric physics
-are inherently correlated with each others. Any atmospheric phenomena at
+atmospheric conditions at any location, and are driven by atmospheric physics
+thus inherently correlated with each others. Any atmospheric phenomena at
 the location would be expected to affect all variables in an expected
 and correlated fashion.  Analysis of historical time
 series data would provide us the baseline correlation structure and
@@ -35,19 +34,19 @@ is calculated from the covariance of two variables divided by the
 multiplication of the standard deviation of those two variables. This
 normalization results in a value between [-1, 1]. If the value is close
 to -1, it means those two variables are highly negatively related. On
-the other hand, then the two variables are strongly positively related.
+the other hand, if the value is close to 1, then the two variables are strongly positively related.
 If the value is near 0, it means those two variables do not have linear
 relation. 
 
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{figures/Spring.png}
-    \caption{Violin plot: Spring 5 variables from SGPMET}
+    \caption{Violin plot: Spring season, 5 variables from SGPMET}
     \label{fig:pc}
 \end{figure*}
 
 We performed a pairwise comparison of the five variables using Pearson
-correlation using data from all 24 extended sites. Atmospheric
+correlation using data from all 24 extended facilities. Atmospheric
 dynamics are strongly driven by seasons and the correlation patterns
 among meteorological variables can have season specific patterns. We
 performed our analysis seasonally by separating the data among Winter, Spring,
@@ -113,7 +112,7 @@ application in Figure~\ref{fig:ssa}.
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{figures/E33.png}
-    \caption{Example of SSA application on ARM data. The full decomposition of \textit{temp\_mean} data from instrument E33.}
+    \caption{Example of SSA application on ARM data. The full decomposition of \textit{temp\_mean} data from MET instrument deployed in facility E33.}
     \label{fig:ssa}
 \end{figure*}
 

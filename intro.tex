@@ -17,9 +17,9 @@ correctness of the raw data. Data are transferred from individual site
 to ADC in a streaming near-real-time fashion and the raw data is
 ingested, processed to produce VAPs and made available to users via a
 web-based data discovery interface with a lag time of less than an hour.
-Along with expediency, its also essential to maintain high quality of
-data and identify, address, and communicate any noise and outliers in
-the data. Thus an effective and efficient outlier and noise detection
+Along with expediency, it is also essential to identify, address, and 
+communicate any noise and outliers in the data to maintain high data quality.
+Thus an effective and efficient outlier and noise detection
 is crucial for ARM to provide scientific users with high quality data
 for research.
 
@@ -88,13 +88,16 @@ carefully as the properties of each data and network are different.
 Second, the temporal data has space and time dimensions which make it
 complex to analysis. Third, its scale is massive, and efficient algorithm
 is crucial for fast outlier detection. One common problem for temporal
-data is to detect outlier graph snapshots from a series graph snapshots
+data is to detect outlier graph snapshots from a series of graph snapshots
 in temporal networks. Spearman's correlation coefficient is a good
 candidate for such problem. It is the rank correlation between two
 sorted lists of graph vertices which are ordered by PageRank or other
 properties \cite{papadimitriou2010web}. Similar to Spearman's
-correlation coefficient, Pearson correlation coefficient and mutual information are also
-commonly used. Jaccard similarity is the size of intersection vertex set
+correlation coefficient, Pearson correlation coefficient, which is explained 
+in detail later and mutual information are also commonly used. 
+Jaccard similarity, graph edit distance, spectral distance and entropy 
+distance are few other commonly proven metrics in temporal network outlier detection.
+Jaccard similarity is the size of intersection vertex set
 divided by the size of union vertex set \cite{jay2012systematic}. Graph
 edit distance describes the necessary changes to make graph $G_1$
 isomorphic to graph $G_2$. It can defined as $d(G_1, G_2) = |V_{G_1}| +
@@ -105,14 +108,13 @@ written as $\sigma(G_1, G_2) =
 \displaystyle\sum_{i=1}^{n}|\lambda_i(G_1) - \lambda_i(G_2)|$
 \cite{jovanovic2012spectral}. Entropy distance is defined by
 the entropy-like measurement between two graphs
-\cite{pincombe2005anomaly}. All these metrics are also common
-seen in temporal network outlier detection.
+\cite{pincombe2005anomaly}.
 
 % Application of outlier detection environmental sensor data
 A number of approaches have been developed in literature for temporal outlier detection,
 especially for environmental sensor data. Birant et al.
-\cite{kut2006spatio} discovered that locations with high wave heights
-are outliers while studying the wave height values from the east of
+\cite{kut2006spatio} discovered high wave heights values as outliers 
+while studying the wave height values from the east of
 the Mediterranean Sea, the Marmara Sea, the Black sea, and the
 Aegean Sea. Hill et al. \cite{hill2007real, hill2010anomaly}
 filtered out measurement errors in the wind speed data stream from
