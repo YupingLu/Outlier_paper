@@ -1,0 +1,272 @@
+\section{Methodology}
+From the many outlier detection methods introduced in the first section,
+we carefully selected Pearson correlation coefficient, Singular
+Spectrum Analysis and K-means for our study and tested them on ARM data. 
+
+%% NOTE: the text below requires some rewording --Jitu
+The various algorithms required differing levels of preprocessing. The
+first level raw data was stored in minute resolution. It was normalized
+for pairwise comparison algorithm. Some algorithms might not need
+so much detail information to extract outliers. Thus we created a
+second level data by averaging the minute data points into one
+day point from the raw data. The second level data could save a lot
+of running time and is easier for Plotly \cite{plotly} and
+Matplotlib \cite{Hunter:2007} to visualize. The third level data
+was specifically created for multivariate analysis by standardization
+all the 5 variables into the same scale based on the second level
+data. Below we will talk about each algorithm in detail. 
+
+\subsection{Pearson correlation coefficient}
+Co-located meteorological variables measure different aspect of the
+atmospheric conditions at any location, and are driven by atmospheric physics
+thus inherently correlated with each others. Any atmospheric phenomena at
+the location would be expected to affect all variables in an expected
+and correlated fashion.  Analysis of historical time
+series data would provide us the baseline correlation structure and
+patterns for the location. In addition, any abrupt change or break in
+correlation structure among meteorological behavior can be a sign of
+sensor malfunction and can be identified a outlier. 
+
+The Pearson correlation coefficient was first introduced by Karl
+Pearson\cite{pearson1895note} and can be used to measure the linear
+correlation between two variables. The Pearson correlation coefficient
+is calculated from the covariance of two variables divided by the
+multiplication of the standard deviation of those two variables. This
+normalization results in a value between [-1, 1]. If the value is close
+to -1, it means those two variables are highly negatively related. On
+the other hand, if the value is close to 1, then the two variables are strongly positively related.
+If the value is near 0, it means those two variables do not have linear
+relation. 
+
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/Spring.png}
+    \caption{Violin plot: Spring season, 5 variables from SGPMET}
+    \label{fig:pc}
+\end{figure*}
+
+We performed a pairwise comparison of the five variables using Pearson
+correlation using data from all 24 extended facilities. Atmospheric
+dynamics are strongly driven by seasons and the correlation patterns
+among meteorological variables can have season specific patterns. We
+performed our analysis seasonally by separating the data among Winter, Spring,
+Summer and Fall seasons. Figure~\ref{fig:pc} show the distribution of
+pairwise correlation for Spring season. All variables show strong
+correlations which are normally distributed. The long tails of the
+distribution are potentially due to outlier data points. 
+For example, the Pearson correlation between
+\textit{temp\_mean} and \textit{vapor\_pressure\_mean} is positively
+correlated with correlation mean close to 0.75. And the Pearson
+correlation between \textit{atmos\_pressure} and \textit{temp\_mean} is
+negatively correlated with correlation mean close to -0.60. These highly
+correlated Pearson correlation coefficients are stored as the expected
+values between two variables. We then compare each Pearson correlation
+of two variables from a specific season in a specific year from a
+specific instrument individually. If this pairwise Pearson correlation
+of two variables deviates far away from our stored base knowledge, we
+treat it as an outlier. We can also use this method to check whether the
+upcoming data contains outliers.
+
+\subsection{Singular Spectrum Analysis}
+Singular Spectrum Analysis (SSA) is a popular method for time series
+data analysis \cite{golyandina2013singular, golyandina2014basic}. The
+general idea is to use a subset of the decomposition of trajectory
+matrix to approximate the original data. Many applications can be found
+in \cite{golyandina2013singular}. For example, SSA can be applied to
+monitor volcanic activity \cite{bozzo2010relationship}. It can also be
+used to extract trend \cite{alexandrov2008method}. Different from the
+classic SSA method, we defined our own version of SSA which is designed
+to remove any number of modes of specified periodicity from the time
+series. This is meant to remove known seasonalities from the data in 
+order to isolate true anomalous values more accurately. We provided a 
+schematic of the algorithm used in Figure~\ref{fig:pcs} and a sample 
+application in Figure~\ref{fig:ssa}.
+
+% SSA workflow
+\begin{figure}[ht]
+    \centering
+    % Define block styles
+    \tikzstyle{decision} = [diamond, draw, fill=blue!20, text width=4.5em,text badly centered, node distance=3cm, inner sep=0pt]
+    \tikzstyle{block} = [rectangle, draw, fill=blue!20, minimum width=5em, text centered, rounded corners, minimum height=2em]
+    \tikzstyle{line} = [draw, -latex']
+    \tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm, text width=3em, minimum height=2em]
+    \begin{tikzpicture}[node distance = 2cm, auto]
+        % Place nodes
+        \node [block] (init) {\small Embedding};
+        \node [block, right of=init, node distance=3cm] (decomp) {\small Decomposition};
+        \node [block, below of=decomp] (freq) {\small Finding Dominant Frequency};
+        \node [block, below of=freq] (period) {\small Converting Periodicity into Frequency};
+        \node [block, below of=period] (approx) {\small Approximation};
+        \node [block, left of=approx, node distance=3cm] (re) {\small Reconstruction};
+        % Draw edges
+        \path [line] (init) -- (decomp);
+        \path [line] (decomp) -- (freq);
+        \path [line] (freq) -- (period);
+        \path [line] (period) -- (approx);
+        \path [line] (approx) -- (re);
+    \end{tikzpicture}
+    \caption{Flowchart of SSA}
+    \label{fig:pcs}
+\end{figure}
+
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/E33.png}
+    \caption{Example of SSA application on ARM data. The full decomposition of \textit{temp\_mean} data from MET instrument deployed in facility E33.}
+    \label{fig:ssa}
+\end{figure*}
+
+% SSA algorithm description
+Assume we have an ARM time series data Y of length T
+\begin{align*}
+Y =(y_1,\ \ldots,\ y_T)
+\end{align*}
+where $T > 2$ and $y_i$ is not empty. Let $L\ (1 < L \leq T/2)$ be the window size and $K = T - L + 1$. In general, the algorithm contains two main parts: decomposition and reconstruction. The first step is to form the trajectory matrix \textbf{X} from vector Y by embedding subsets of Y. These subsets of Y $X_i$ are lagged vectors of length L.  
+\begin{align*}
+X_i = (y_i,\ \ldots,\ y_{L+i-1})^T \quad (1 \leq i \leq K) \\
+\mathbf{X} = [X_1,\ \ldots,\ X_K] 
+\end{align*}
+Thus the trajectory matrix is
+\begin{equation}
+\mathbf{X} = (x_{ij})_{i,j=1}^{L,K}  = \left(\begin{IEEEeqnarraybox*}[][c]{,c/c/c/c/c,}
+y_1 & y_2 & y_3 & \ldots & y_K\\
+y_2 & y_3 & y_4 & \ldots & y_{K+1}\\
+y_3 & y_4 & y_5 & \ldots & y_{K+2}\\
+\vdots & \vdots & \vdots & \ddots & \vdots\\
+y_L & y_{L+1} & y_{L+2} & \ldots & y_T
+\end{IEEEeqnarraybox*}\right)\label{e:traj}
+\end{equation}
+where $x_{ij} = y_{i+j-1}$. We can see from equation 1 that matrix \textbf{X} has equal elements on anti-diagonals and therefore it is a Hankel matrix. Then we perform the singular value decomposition (SVD) on $\mathbf{S}=\mathbf{XX}^T$ where the eigenvalues of S are denoted by $\lambda_1, \ldots, \lambda_L$ in the decreasing order of magnitude $(\lambda_1 \geq \ldots \geq \lambda_L \geq 0)$ and the corresponding eigenvectors by $P_1, \ldots, P_L$. Let $d = rank\ \mathbf{X}$ and $V_i = \mathbf{X}^T P_i / \sqrt{\lambda_i} (i = 1, \ldots, d)$. Thus, the trajectory matrix X can then be written by its eigendecomposition,
+\begin{equation}
+\mathbf{X} = \mathbf{X_1} + \ldots + \mathbf{X_d}
+\end{equation}
+where $\mathbf{X_i} = \sqrt{\lambda_i} P_i V_i^T$.
+
+Next we choose a subset of eigenpairs to form an approximation of the
+trajectory matrix. It is at this point that our version of the algorithm
+differs. Given that the time series we are studying has seasonality at
+known frequencies, we use Fast Fourier transform (FFT) to find the
+dominant frequency of each eigenvector \cite{cooley1965algorithm}. We
+then approximate the trajectory matrix by including modes which match
+the frequencies of the seasonality we wish to remove. For example, we
+anticipate that the temperature data will have a annual and possibly
+monthly cycle, as shown in Figure~\ref{fig:ssa}. SSA allows us to tease
+out these contributions in additive fashion. In this example, the
+signals from the year, month, and residual sum together to form the
+original raw data. This residual is then the noise in the raw data with
+the seasonality removed as doing so exposes large anomalies which are
+possible outliers. %Algorithm 1 shows the whole process.
+
+%\begin{algorithm}[ht]
+%\DontPrintSemicolon
+%\SetAlgoLined
+%%\KwResult{Dominant frequency of each eigenvector}
+%\SetKwInOut{Input}{Input}
+%\SetKwInOut{Output}{Output}https://v2.overleaf.com/9723918617khctmsbmkbqg
+%\Input{$\lambda$ of $\mathbf{S}$ and corresponding eigenvectors $\mathbf{P}$}
+%\Output{Dominant frequency of each eigenvector}
+%\BlankLine
+%
+%fftfreq $\leftarrow$ Discrete Fourier Transform sample frequencies\;
+%fft $\leftarrow$ Discrete Fourier Transform\;
+%len $\leftarrow$ size of $\lambda$\;
+%frequencies $\leftarrow$ zero vector of size len\;
+%fs $\leftarrow$ fftfreq($\lambda$)\;
+%ix $\leftarrow$ indices that sort fs\;
+%fs $\leftarrow$ fs[ix]\;
+%\For{i in range(len)}{
+%    p1 $\leftarrow$ abs(fft($\mathbf{P}$[:,i]))\;
+%    ps $\leftarrow$ p1**2\;
+%    ps $\leftarrow$ ps[ix]\;
+%    frequencies[i] $\leftarrow$ fs[index of the maximum value in ps]\;
+%}
+%\Return abs(frequencies)
+%\caption{Dominant Frequency Finder}
+%\end{algorithm}
+
+Once the eigenpairs are chosen, we proceed with the classical definition
+of the method. If $I$ represents a set of indices corresponding to the
+eigenmodes to remove, we approximate the trajectory matrix
+%
+\begin{equation*}
+    \mathbf{Xt} = \sum_{i\in I} \mathbf{X_i}
+\end{equation*}
+%
+An approximation $Yt$ to the original signal $Y$ can be obtained from
+$\mathbf{Xt}$ by inverting the process used to form the trajectory
+matrix, Equation~\eqref{e:traj}. Each column of $\mathbf{Xt}$ represents
+a shifted approximation to $Yt$, thus we average each shifted column.
+Finally the deseasonalized residual is the difference between the
+original signal and the reconstruction, $R=Y-Yt$.
+
+In this paper, we chose the \textit{temp\_mean} data from instrument E33
+as $Y$ to illustrate SSA. Because SSA requires the time series data to
+be continuous, we replaced the empty points with the average temp\_mean
+value for that day in a year. We set $L = 400$ and picked a single year
+and month as the periodicity groups. Thus $Yt = Yt[0] + Yt[1] + Yt[2]$.
+Figure~ \ref{fig:ssa} is a visualization of the result. The first row is
+the raw data $Y$. The orange line $Yt[0]$ is the trend. As we can see
+from the figure, the trend is pretty flat from 2012 to 2017. The second
+row and third row are $Yt[1]$, $Yt[2]$ respectively. The Year data
+matches the pattern of the raw data. The last row is the residual. Those
+peak values outside the blue shaded area are outliers.
+
+\subsection{K-means}
+K-means is a partitioning clustering algorithm \cite{macqueen1967some,
+hartigan1979algorithm}. It starts with the k centroids user
+specified, and assigns the points to the nearest centroid. Then it
+computes new k centroids and assign the rest points to these
+centroids again. The process repeats until it converges. 
+
+% K-means algorithm
+\begin{algorithm}[ht]
+\DontPrintSemicolon
+\SetAlgoLined
+%\KwResult{Dominant frequency of each eigenvector}
+\SetKwInOut{Input}{Input}
+\SetKwInOut{Output}{Output}
+\Input{ARM time series data}
+\Output{Outliers}
+\BlankLine
+
+outliers $\leftarrow \varnothing$\;
+df $\leftarrow$ ARM time series data\;
+data $\leftarrow$ df[`atmos\_pressure',`temp\_mean',\
+`rh\_mean',`vapor\_pressure\_mean',`wspd\_arith\_mean']\;
+number\_of\_clusters $\leftarrow$ 4\;
+clusters $\leftarrow$ K-means(data, number\_of\_clusters)\;
+distances $\leftarrow$ Distance between each point and its centroid\;
+mean $\leftarrow$ arithmetic mean of distances\;
+sigma $\leftarrow$ standard deviation of distances\;
+threshold $\leftarrow$ mean + 3 * sigma\;
+\For{i in range(size of distances)}{
+    \If{distances[i] $>$ threshold}{
+        outliers $\leftarrow$ outliers $\cup$ {distances[i]}
+    }
+}
+\Return outliers
+\caption{K-means Outlier Detection}\label{alg:kmeans}
+\end{algorithm}
+
+In this paper, we did not stop after clustering ARM data with K-means.
+We transformed the generated clusters into a vector of distance between
+each point and its corresponding centroid. If the distance of a point is
+larger than the threshold, this point will be filtered out as an
+outlier. Algorithm~\ref{alg:kmeans} describes the whole process. Unlike
+SSA, we used all the 5 variables mentioned in Datasets section together
+to extract outliers.
+
+\begin{figure*}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{figures/kmeans.png}
+    \caption{Outliers detected using K-means for E33}
+    \label{fig:kmeans}
+\end{figure*}
+
+Again, we used data from instrument E33 as an example for K-means. Here
+we set k to 4 as each year has 4 seasons.  Figure~\ref{fig:kmeans}
+visualized the outliers detected from E33. Y axes in this figure is the
+distance metric. Those red squares which are far away from the centroids
+are outliers.
+
+
