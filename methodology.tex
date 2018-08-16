@@ -25,7 +25,7 @@ and correlated fashion.  Analysis of historical time
 series data would provide us the baseline correlation structure and
 patterns for the location. In addition, any abrupt change or break in
 correlation structure among meteorological behavior can be a sign of
-sensor malfunction and should be identified a outlier. 
+sensor malfunction and should be identified as an outlier. 
 
 The Pearson correlation coefficient was first introduced by Karl
 Pearson\cite{pearson1895note} and can be used to measure the linear
@@ -51,7 +51,7 @@ correlation using data from all 24 extended facilities. Atmospheric
 dynamics are strongly driven by seasons and the correlation patterns
 among meteorological variables can have season specific patterns. We
 performed our analysis seasonally by separating the data among Winter, Spring,
-Summer and Fall seasons. Figure~\ref{fig:pc} show the distribution of
+Summer and Fall seasons. Figure~\ref{fig:pc} shows the distribution of
 pairwise correlation for Spring season. All variables show strong
 correlations which are normally distributed. The long tails of the
 distribution are potentially due to outlier data points. 
@@ -71,13 +71,13 @@ incoming datastream on near-real-time basis to identify outliers.
 \subsection{Singular Spectrum Analysis}
 Univariate time series analysis of meteorological variables can be
 applied to identify any unexpected variability and extreme values
-observed by the instruments. These anamolous observations can be
+observed by the instruments. These anomalous observations can be
 indicative of extreme atmospheric events at the site and are important
-to identify. However, a range of natural inter- and intra-annual variability in
-meterological times series is also expected and it's important to not
+to identify. However, a range of natural inter-annual and intra-annual variability in
+meteorological times series is also expected and it's important to not
 erroneously flag them as outliers. We applied Singular Spectrum Analysis
 for time series of analysis of meteorological observations to identify
-exteme events.
+extreme events.
 
 Singular Spectrum Analysis (SSA) is a popular method for time series
 data analysis \cite{golyandina2013singular,golyandina2014basic}. The
@@ -291,7 +291,7 @@ to extract outliers.
 
 Again, we used data from instrument E33 as an example for K-means. Here
 we set k to 4 as each year has 4 seasons.  Figure~\ref{fig:kmeans}
-visualized the outliers detected from E33. Y axes in this figure is the
+visualizes the outliers detected from E33. Y axes in this figure is the
 distance metric. Those red squares which are far away from the centroids
 are outliers.
 
