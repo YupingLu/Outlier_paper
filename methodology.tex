@@ -23,9 +23,12 @@ are inherently correlated with each others. Any atmospheric phenomena at
 the location would affect all variables in an expected
 and correlated fashion.  Analysis of historical time
 series data would provide us the baseline correlation structure and
-patterns for the location. In addition, any abrupt change or break in
+patterns for the location. Any abrupt change or break in
 correlation structure among meteorological behavior can be a sign of
-sensor malfunction and should be identified as an outlier. 
+sensor malfunction and should be identified as an outlier. In addition,
+ARM SGP site comprise of multiple facilities making similar sets of
+measurement and any abrupt change in correlation structure not observed
+at other facilities will also indicate a potential outlier.
 
 The Pearson correlation coefficient was first introduced by Karl
 Pearson\cite{pearson1895note} and can be used to measure the linear
@@ -238,6 +241,8 @@ anamolous positive or negative temperature residuals can be identified
 as outliers in the data. \hl{SHOULD DESCRIBE HOW WE DEFINED THRESHOLD}
 
 \subsection{K-means}
+
+
 K-means is a partitioning clustering algorithm \cite{macqueen1967some,
 hartigan1979algorithm}. It starts with the k centroids user
 specified, and assigns the points to the nearest centroid. Then it
@@ -273,6 +278,15 @@ threshold $\leftarrow$ mean + 3 * sigma\;
 \Return outliers
 \caption{K-means Outlier Detection}\label{alg:kmeans}
 \end{algorithm}
+Southern plains where SGP site is located is experience frequent extreme
+storms occuring most frequently during spring and early summer seasons.
+Identifying these extreme events is of interest for scientific users of
+the data to study and/or isolate these phenomena. However,
+meteorological variables during such events won't be captured by Pearson
+Correlation as they follow know correlation structure
+among variables or by SSA method since an individual variable may not
+show large deviation. A multivariate approach like $k$-means clustering
+would effectively identify such outlier events.
 
 In this paper, we did not stop after clustering ARM data with K-means.
 We transformed the generated clusters into a vector of distance between
