@@ -235,7 +235,11 @@ The last row show the time series of residual after removing the tends,
 and annual and monthly frequencies from the data. While some of the
 residuals may be reflective if natural variability, the
 anamolous positive or negative temperature residuals can be identified
-as outliers in the data. \hl{SHOULD DESCRIBE HOW WE DEFINED THRESHOLD}
+as outliers in the data. Multiple methods are available to set a threshold 
+for extreme values in the residuals as outliers. We used the three sigma 
+rule to extract outliers \cite{pukelsheim1994three}. For example, the two
+peak points in Figure~\ref{fig:ssa} are larger than three sigmas, 
+thus are outliers.
 
 \subsection{K-means}
 K-means is a partitioning clustering algorithm \cite{macqueen1967some,
