@@ -43,7 +43,7 @@ relation.
 
 \begin{figure*}[ht]
     \centering
-    \includegraphics[width=\textwidth]{figures/Spring.png}
+    \includegraphics[width=0.8\textwidth]{figures/Spring.png}
     \caption{Correlation patterns for five meteorological variables
 		during spring season.}
     \label{fig:pc}
@@ -92,41 +92,43 @@ used to extract trend \cite{alexandrov2008method}. Different from the
 classic SSA method, we defined our own version of SSA which is designed
 to remove any number of modes of specified periodicity from the time
 series. This is meant to remove known seasonalities from the data in 
-order to isolate true anomalous values more accurately. We provided a 
-schematic of the algorithm used in Figure~\ref{fig:pcs} and a sample 
-application in Figure~\ref{fig:ssa}.
+order to isolate true anomalous values more accurately. %We provided a 
+%schematic of the algorithm used in Figure~\ref{fig:pcs} and a sample 
+%application in Figure~\ref{fig:ssa}.
 
-% SSA workflow
-\begin{figure}[ht]
-    \centering
-    % Define block styles
-    \tikzstyle{decision} = [diamond, draw, fill=blue!20, text width=4.5em,text badly centered, node distance=3cm, inner sep=0pt]
-    \tikzstyle{block} = [rectangle, draw, fill=blue!20, minimum width=5em, text centered, rounded corners, minimum height=2em]
-    \tikzstyle{line} = [draw, -latex']
-    \tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm, text width=3em, minimum height=2em]
-    \begin{tikzpicture}[node distance = 2cm, auto]
-        % Place nodes
-        \node [block] (init) {\small Embedding};
-        \node [block, right of=init, node distance=3cm] (decomp) {\small Decomposition};
-        \node [block, below of=decomp] (freq) {\small Finding Dominant Frequency};
-        \node [block, below of=freq] (period) {\small Converting Periodicity into Frequency};
-        \node [block, below of=period] (approx) {\small Approximation};
-        \node [block, left of=approx, node distance=3cm] (re) {\small Reconstruction};
-        % Draw edges
-        \path [line] (init) -- (decomp);
-        \path [line] (decomp) -- (freq);
-        \path [line] (freq) -- (period);
-        \path [line] (period) -- (approx);
-        \path [line] (approx) -- (re);
-    \end{tikzpicture}
-    \caption{Flowchart of SSA}
-    \label{fig:pcs}
-\end{figure}
+%% SSA workflow
+%\begin{figure}[ht]
+%    \centering
+%    % Define block styles
+%    \tikzstyle{decision} = [diamond, draw, fill=blue!20, text width=4.5em,text badly centered, node distance=3cm, inner sep=0pt]
+%    \tikzstyle{block} = [rectangle, draw, fill=blue!20, minimum width=5em, text centered, rounded corners, minimum height=2em]
+%    \tikzstyle{line} = [draw, -latex']
+%    \tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm, text width=3em, minimum height=2em]
+%    \begin{tikzpicture}[node distance = 2cm, auto]
+%        % Place nodes
+%        \node [block] (init) {\small Embedding};
+%        \node [block, right of=init, node distance=3cm] (decomp) {\small Decomposition};
+%        \node [block, below of=decomp] (freq) {\small Finding Dominant Frequency};
+%        \node [block, below of=freq] (period) {\small Converting Periodicity into Frequency};
+%        \node [block, below of=period] (approx) {\small Approximation};
+%        \node [block, left of=approx, node distance=3cm] (re) {\small Reconstruction};
+%        % Draw edges
+%        \path [line] (init) -- (decomp);
+%        \path [line] (decomp) -- (freq);
+%        \path [line] (freq) -- (period);
+%        \path [line] (period) -- (approx);
+%        \path [line] (approx) -- (re);
+%    \end{tikzpicture}
+%    \caption{Flowchart of SSA}
+%    \label{fig:pcs}
+%\end{figure}
 
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{figures/E33.png}
-    \caption{Example of SSA application on ARM data. The full decomposition of \textit{temp\_mean} data from MET instrument deployed in facility E33.}
+    \caption{Decomposition of \textit{temp\_mean} data from MET
+		instrument at facility E33 using SSA method to isolate various
+			frequencies.}
     \label{fig:ssa}
 \end{figure*}
 
@@ -246,12 +248,28 @@ thus are outliers.
 
 \subsection{K-means}
 
+Southern plains, where SGP site is located, are known to experience frequent extreme
+storms occuring most frequently during spring and early summer seasons.
+Identifying these extreme events is of interest for scientific users of
+the data to study and/or isolate these phenomena. However,
+meteorological variables during such events won't be captured by Pearson
+Correlation as they may still follow know correlation structure at seasonal scales
+or by SSA method since any individual variable may not
+show large deviation. Multivariate approach like $k$-means clustering
+have been widely used to identify weather and climate regimes
+\cite{Hoffman_EI_20050803,Hargrove_EnvironManage_20040401}. We used
+$k$-means clustering algorithm to delineate the weather regimes at SGP
+site. While extreme storms and weather events that often occur at sub-daily
+timescales may still fall within identified known weather regimes at the
+site, they often are out of norm extremes within the regime and of
+interest to us.
 
 K-means is a partitioning clustering algorithm \cite{macqueen1967some,
-hartigan1979algorithm}. It starts with the k centroids user
-specified, and assigns the points to the nearest centroid. Then it
-computes new k centroids and assign the rest points to these
-centroids again. The process repeats until it converges. 
+hartigan1979algorithm}. It starts with user specifies $k$ centroids, 
+and assigns the points to the nearest centroid. Then it
+computes new $k$ centroids and assign all data points to these
+centroids again. This process is repeated until convergence criteria is
+met. 
 
 % K-means algorithm
 \begin{algorithm}[ht]
@@ -282,35 +300,76 @@ threshold $\leftarrow$ mean + 3 * sigma\;
 \Return outliers
 \caption{K-means Outlier Detection}\label{alg:kmeans}
 \end{algorithm}
-Southern plains where SGP site is located is experience frequent extreme
-storms occuring most frequently during spring and early summer seasons.
-Identifying these extreme events is of interest for scientific users of
-the data to study and/or isolate these phenomena. However,
-meteorological variables during such events won't be captured by Pearson
-Correlation as they follow know correlation structure
-among variables or by SSA method since an individual variable may not
-show large deviation. A multivariate approach like $k$-means clustering
-would effectively identify such outlier events.
 
-In this paper, we did not stop after clustering ARM data with K-means.
-We transformed the generated clusters into a vector of distance between
-each point and its corresponding centroid. If the distance of a point is
-larger than the threshold, this point will be filtered out as an
-outlier. Algorithm~\ref{alg:kmeans} describes the whole process. Unlike
-SSA, we used all the 5 variables mentioned in Datasets section together
-to extract outliers.
+We applied $k$-means clustering to ARM meteorological data set to
+defined weather regimes at SGP site. We then calculated the distance of
+each point within a cluster to its corresponding cluster centroid.
+Vector of distances within each cluster were used to identify points
+that are on fringes of the regime they belong to and considered
+outliers. All five meteorological variables were used in this analysis.
+Algorithm~\ref{alg:kmeans} describes the workflow.
+
+%We then transformed the generated clusters into a vector of distance between
+%each point and its corresponding centroid. If the distance of a point is
+%larger than the threshold, this point will be filtered out as an
+%outlier. 
+%Algorithm~\ref{alg:kmeans} describes the whole process. Unlike
+%SSA, we used all the 5 variables mentioned in Datasets section together
+%to extract outliers.
 
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{figures/kmeans.png}
-    \caption{Outliers detected using K-means for E33}
+    \caption{Outliers detected using $k$-means method at facility E33.
+		$X$-axis represent the daily meteorological time series, colored
+		by cluster (weathe regime) they belong to, while
+		$Y$-axis show the distance of the data point from the centroid
+		of its cluster (weather regime).}
     \label{fig:kmeans}
 \end{figure*}
+% cluster 1: oct - june spring 
+% cluster 2: sept - mar fall/winter 
+% cluster 3: may - oct  summer
+% cluster 4: jan - may fall
 
-Again, we used data from instrument E33 as an example for K-means. Here
-we set k to 4 as each year has 4 seasons.  Figure~\ref{fig:kmeans}
-visualizes the outliers detected from E33. Y axes in this figure is the
-distance metric. Those red squares which are far away from the centroids
-are outliers.
+Given known seasonal patterns at the site we set $k$ to four to
+determine weather regimes for four seasons. Figure~\ref{fig:kmeans}
+shows the four regimes at facility E33 that representing spring (cluster
+1), winter (cluster 2), summer (cluster 3) and fall (cluster 4).
+Data points within each weather regime (or cluster) that are at
+significant distance from their clusters (identified by red squares in
+Figure~\ref{fig:kmeans}) were identified as outlier (and may correspond
+to extreme weather events).
+
+\subsection{Evaluation of outlier detection}
+ARM data quality assurance program maintains a database of outliers that
+has been been identified, inspected and documented for all historical
+data. 
+However, recorded data quality
+issues are added manually for historical data when an issue is
+identified or reported and are known to be incomplete
+\cite{mccord2016arm}. 
+A description of the outlier event is included in these DQR which often
+are temporary change in operating conditions such as power failures, frozen 
+and snow covered sensors, instrument degradation, or contamination. 
+Most often extreme weather events are not captured and reported by the
+current system.
+before. Each DQR entry also contains a specific time range affected, 
+list of data projects, and specific measurements. And these entries 
+are usually submitted by either the Data Quality Office \cite{peppler2016arm} 
+or the instrument mentor \cite{cress2016deploying}. 
+The Data Quality Reports (DQR) are stored and available as PostgreSQL
+database (\url{http://dq.arm.gov}). 
+We evaluated outliers
+identified by methods developed in this study against the DQRs in the
+database through database queries and calculated precision and recall
+metrics. 
+We calculated \textit{Precision} and \textit{Recall} metrics to evaluate 
+the accuracy of outlier identification methods.
+\textit{Precision} is calculated as True Positives divided by the
+sum of True Positives and False Positives. On the other hand,
+\textit{Recall} is measured from True Positives divided by the sum
+of True Positives and False Negatives. We treated outliers in
+DQR database as True Positives.
 
 

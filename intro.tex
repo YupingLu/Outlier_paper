@@ -53,14 +53,16 @@ K-means \cite{macqueen1967some}, dynamic clustering
 \cite{gupta2013context}, and self-organizing map (SOM)
 \cite{gonzalez2003anomaly} are also popular. The choice of the
 clustering algorithm depends on the problem itself as each has
-different size and complexity. Three unsupervised parametric models,
-finite state automata (FSA), Markov models, and Hidden Markov Models
-(HMMs), are often seen in outlier detection as well. An outlier is
-detected if the FSA in the current state could not reach the final
-state \cite{chandola2008comparative}. The history size in the Markov
-model could be either fixed or flexible. HMMs are easy to interpret
-but not function well with big datasets
-\cite{chandola2008comparative}. Researchers also tried supervised
+different size and complexity. 
+%Three unsupervised parametric models,
+%finite state automata (FSA), Markov models, and Hidden Markov Models
+%(HMMs), are often seen in outlier detection as well. An outlier is
+%detected if the FSA in the current state could not reach the final
+%state \cite{chandola2008comparative}. The history size in the Markov
+%model could be either fixed or flexible. HMMs are easy to interpret
+%but not function well with big datasets
+%\cite{chandola2008comparative}. 
+Researchers have also tried supervised
 methods such as neural networks \cite{dasgupta2000comparison},
 support vector machines (SVMs) \cite{li2006motion}, and decision
 trees \cite{kang2005learning} to detect outliers.
@@ -75,7 +77,7 @@ univariate time series data is similar to window-based detection. The
 subspace based transformation is to convert a univariate time series
 into a multivariate time series with fixed window size. It then
 transforms the multivariate time series back to univariate time series.
-Singular Spectrum Analysis is a good example of this idea
+Singular Spectrum Analysis is a widely used algorithm for such problem
 \cite{golyandina2013singular}.
 
 % Outliers detection for temporal networks: graph, community etc. 
