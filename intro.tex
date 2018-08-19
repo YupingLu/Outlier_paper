@@ -68,8 +68,8 @@ support vector machines (SVMs) \cite{li2006motion}, and decision
 trees \cite{kang2005learning} to detect outliers.
 
 % window based methods
-Different from the methods mentioned above, window-based detection is
-breaking the time series data into overlapping subsequences with fixed
+Different from the methods mentioned above, window-based detection 
+breaks the time series data into overlapping subsequences with fixed
 window size \cite{cheboli2010anomaly}. Each window is assigned an
 anomaly score, and then a final score for the times series data is
 calculated by aggregating the window scores. Subspace based analysis for
@@ -130,4 +130,14 @@ American precipitation data set. Sun et al.
 different temperature from their surroundings by exploring the
 South China area dataset from 1992 to 2002.
 
-
+Within ARM program, the Data Quality Office (DQO) is charged with 
+inspecting and assessing approximately 5,000 data fields on a daily 
+to weekly basis. The objective of DQO is to quickly identify data 
+anomalies and report them to site operators and instrument mentors 
+so that corrective actions can be performed and thereby minimize the 
+amount of unacceptable data collected. With focus on quick near real-time 
+assessment of data, process relies heavily on univariate analysis and lacks 
+rigorous detection of outliers. Objective of this study was to develop
+efficient and rigorous  outlier detection technique for ARM time series
+data using univariate, multivariate and time series statistical
+techniques.
