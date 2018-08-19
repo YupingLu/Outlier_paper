@@ -1,7 +1,7 @@
 \section{Methodology}
 From the many outlier detection methods introduced in the first section,
 we carefully selected Pearson correlation coefficient, Singular
-Spectrum Analysis and K-means for our study and tested them on ARM data. 
+Spectrum Analysis and $k$-means for our study and tested them on ARM data. 
 
 The various algorithms required differing levels of preprocessing. The
 first level raw data was stored in minute resolution. It was normalized
@@ -13,7 +13,7 @@ of running time and is easier for Plotly \cite{plotly} and
 Matplotlib \cite{Hunter:2007} to visualize. The third level data
 was specifically created for multivariate analysis by standardization
 all the 5 variables into the same scale based on the second level
-data. Below we will talk about each algorithm in detail. 
+data. Below we will discuss each algorithm in detail. 
 
 \subsection{Pearson correlation coefficient}
 Co-located meteorological variables measure different aspect of the
@@ -58,9 +58,9 @@ pairwise correlation for Spring season. All variables show strong
 correlations which are normally distributed. The long tails of the
 distribution are potentially due to outlier data points. 
 For example, the Pearson correlation between
-\textit{temp\_mean} and \textit{vapor\_pressure\_mean} is positively
+air temperature and vapor pressure is positively
 correlated with correlation mean close to 0.75. And the Pearson
-correlation between \textit{atmos\_pressure} and \textit{temp\_mean} is
+correlation between atmospheric pressure and air temperature is
 negatively correlated with correlation mean close to -0.60. These highly
 correlated Pearson correlation coefficients are stored as the expected
 values between two variables. We then compare each Pearson correlation
@@ -96,7 +96,7 @@ order to isolate true anomalous values more accurately.
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{figures/E33.png}
-    \caption{Decomposition of \textit{temp\_mean} data from MET
+    \caption{Decomposition of air temperature data from MET
 		instrument at facility E33 using SSA method to isolate various
 			frequencies.}
     \label{fig:ssa}
@@ -168,9 +168,9 @@ We set $L = 400$ and isolated the signals corresponding to year and
 monthly frequency in the data.
 Thus $Yt = Yt[0] + Yt[1] + Yt[2]$.
 Figure~\ref{fig:ssa} show the result of SSA analysis for
-\textit{temp\_mean} variable at facility E33. The first row of
+air temperature variable at facility E33. The first row of
 Figure~\ref{fig:ssa} show the raw daily time series ($Yt$) of
-\textit{temp\_mean}, which show no significant trend (orange line
+air temperature, which show no significant trend (orange line
 $Yt[0]$) at the site during period 2012 to 2017.
 The second and third rows show the annual ($Yt[1]$) and monthly
 ($Yt[2]$) frequencies of the temperature time series respectively. 
