@@ -2,26 +2,21 @@
 In this paper we tested pairwise Pearson correlation,
 univariate SSA and multivariate $k$-means based method for detection of
 outliers in the data at ARM meteorological observations at SGP site. 
-Combing the approaches within a framework that can be applied to
-streaming data set within ARM provided an platform to detect outliers
+Combining the approaches within a framework for
+streaming data set within ARM provides a platform to detect outliers
 from a wide range of sensor failure scenarios to extreme events.
-While each of the method developed and applied in this study had their
+While each of the methods developed and applied in this study has its
 strengths and limitations, our evaluation against existing database of
-data quality issue suggest that the framework was able to identify known
-outliers well and many more. While our current study focused on
+data quality issue suggests that the framework is able to identify known
+outliers well. Although our current study focused on
 meteorological observations, it provides a framework for an efficient
-outlier detection of streaming datasets within ARM that be extended to
-other classes of time series dataset.
-only tested MET data from SGP. In future we plan to analyze multiple
+outlier detection of streaming datasets within ARM that can be extended to
+other classes of time series datasets not only tested MET data from SGP. 
+In the future, we plan to analyze multiple
 classes of instruments like meteorological, radiometric, radar etc.
 simultaneously for improved detection of outliers. We also plan to
-develop graph theory and machine learning techniques to address this
-high dimensional problem in an operational data center environment. 
-instrument independently. We will apply this framework on other types
-of data from other facilities in the future. Meanwhile, other methods
-will be examined to test data from multiple instruments together such
-as graph theory methods \cite{phillips2015graph} and machine learning
-methods. 
+develop graph theory \cite{phillips2015graph} and machine learning techniques to address this
+high dimensional problem in an operational data center environment.
 
 The three algorithms and visualizations presented in this paper are 
 implemented in Python. All codes and results are available on GitHub 
