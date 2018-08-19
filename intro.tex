@@ -23,7 +23,6 @@ Thus an effective and efficient outlier and noise detection
 is crucial for ARM to provide scientific users with high quality data
 for research.
 
-% The general definition of outlier detection and their types.
 Outlier detection, also called anomaly detection or intrusion detection,
 is a common task in many application domains that include time
 series data, streaming data, distributed data, spatio-temporal
@@ -38,7 +37,6 @@ visualization. Among all these techniques, time series data
 outlier detection and temporal network outlier detection are
 especially useful for ARM data.
 
-% Outlier detection for time series data
 Outlier detection in time series data was first studied by Fox in 1972
 \cite{fox1972outliers}. Common types of outliers are additive outliers,
 level shifts, temporary changes, and innovative outliers. One common
@@ -53,21 +51,11 @@ K-means \cite{macqueen1967some}, dynamic clustering
 \cite{gupta2013context}, and self-organizing map (SOM)
 \cite{gonzalez2003anomaly} are also popular. The choice of the
 clustering algorithm depends on the problem itself as each has
-different size and complexity. 
-%Three unsupervised parametric models,
-%finite state automata (FSA), Markov models, and Hidden Markov Models
-%(HMMs), are often seen in outlier detection as well. An outlier is
-%detected if the FSA in the current state could not reach the final
-%state \cite{chandola2008comparative}. The history size in the Markov
-%model could be either fixed or flexible. HMMs are easy to interpret
-%but not function well with big datasets
-%\cite{chandola2008comparative}. 
-Researchers have also tried supervised
+different size and complexity. Researchers have also tried supervised
 methods such as neural networks \cite{dasgupta2000comparison},
 support vector machines (SVMs) \cite{li2006motion}, and decision
 trees \cite{kang2005learning} to detect outliers.
 
-% window based methods
 Different from the methods mentioned above, window-based detection 
 breaks the time series data into overlapping subsequences with fixed
 window size \cite{cheboli2010anomaly}. Each window is assigned an
@@ -80,7 +68,6 @@ transforms the multivariate time series back to univariate time series.
 Singular Spectrum Analysis is a widely used algorithm for such problem
 \cite{golyandina2013singular}.
 
-% Outliers detection for temporal networks: graph, community etc. 
 ARM data also belongs to the class of temporal data as we can sequentially create a
 time series of network changes or graph snapshots at different periods.
 Each period forms a graph snapshot using various graph distance metrics
@@ -112,7 +99,6 @@ written as $\sigma(G_1, G_2) =
 the entropy-like measurement between two graphs
 \cite{pincombe2005anomaly}.
 
-% Application of outlier detection environmental sensor data
 A number of approaches have been developed in literature for temporal outlier detection,
 especially for environmental sensor data. Birant et al.
 \cite{kut2006spatio} discovered high wave heights values as outliers 

@@ -3,7 +3,6 @@ From the many outlier detection methods introduced in the first section,
 we carefully selected Pearson correlation coefficient, Singular
 Spectrum Analysis and K-means for our study and tested them on ARM data. 
 
-%% NOTE: the text below requires some rewording --Jitu
 The various algorithms required differing levels of preprocessing. The
 first level raw data was stored in minute resolution. It was normalized
 for pairwise comparison algorithm. Some algorithms might not need
@@ -92,36 +91,7 @@ used to extract trend \cite{alexandrov2008method}. Different from the
 classic SSA method, we defined our own version of SSA which is designed
 to remove any number of modes of specified periodicity from the time
 series. This is meant to remove known seasonalities from the data in 
-order to isolate true anomalous values more accurately. %We provided a 
-%schematic of the algorithm used in Figure~\ref{fig:pcs} and a sample 
-%application in Figure~\ref{fig:ssa}.
-
-%% SSA workflow
-%\begin{figure}[ht]
-%    \centering
-%    % Define block styles
-%    \tikzstyle{decision} = [diamond, draw, fill=blue!20, text width=4.5em,text badly centered, node distance=3cm, inner sep=0pt]
-%    \tikzstyle{block} = [rectangle, draw, fill=blue!20, minimum width=5em, text centered, rounded corners, minimum height=2em]
-%    \tikzstyle{line} = [draw, -latex']
-%    \tikzstyle{cloud} = [draw, ellipse,fill=red!20, node distance=3cm, text width=3em, minimum height=2em]
-%    \begin{tikzpicture}[node distance = 2cm, auto]
-%        % Place nodes
-%        \node [block] (init) {\small Embedding};
-%        \node [block, right of=init, node distance=3cm] (decomp) {\small Decomposition};
-%        \node [block, below of=decomp] (freq) {\small Finding Dominant Frequency};
-%        \node [block, below of=freq] (period) {\small Converting Periodicity into Frequency};
-%        \node [block, below of=period] (approx) {\small Approximation};
-%        \node [block, left of=approx, node distance=3cm] (re) {\small Reconstruction};
-%        % Draw edges
-%        \path [line] (init) -- (decomp);
-%        \path [line] (decomp) -- (freq);
-%        \path [line] (freq) -- (period);
-%        \path [line] (period) -- (approx);
-%        \path [line] (approx) -- (re);
-%    \end{tikzpicture}
-%    \caption{Flowchart of SSA}
-%    \label{fig:pcs}
-%\end{figure}
+order to isolate true anomalous values more accurately. 
 
 \begin{figure*}[ht]
     \centering
@@ -132,7 +102,6 @@ order to isolate true anomalous values more accurately. %We provided a
     \label{fig:ssa}
 \end{figure*}
 
-% SSA algorithm description
 Assume we have an ARM time series data Y of length T
 \begin{align*}
 Y =(y_1,\ \ldots,\ y_T)
@@ -171,34 +140,7 @@ out these contributions in additive fashion. In this example, the
 signals from the year, month, and residual sum together to form the
 original raw data. This residual is then the noise in the raw data with
 the seasonality removed as doing so exposes large anomalies which are
-possible outliers. %Algorithm 1 shows the whole process.
-
-%\begin{algorithm}[ht]
-%\DontPrintSemicolon
-%\SetAlgoLined
-%%\KwResult{Dominant frequency of each eigenvector}
-%\SetKwInOut{Input}{Input}
-%\SetKwInOut{Output}{Output}https://v2.overleaf.com/9723918617khctmsbmkbqg
-%\Input{$\lambda$ of $\mathbf{S}$ and corresponding eigenvectors $\mathbf{P}$}
-%\Output{Dominant frequency of each eigenvector}
-%\BlankLine
-%
-%fftfreq $\leftarrow$ Discrete Fourier Transform sample frequencies\;
-%fft $\leftarrow$ Discrete Fourier Transform\;
-%len $\leftarrow$ size of $\lambda$\;
-%frequencies $\leftarrow$ zero vector of size len\;
-%fs $\leftarrow$ fftfreq($\lambda$)\;
-%ix $\leftarrow$ indices that sort fs\;
-%fs $\leftarrow$ fs[ix]\;
-%\For{i in range(len)}{
-%    p1 $\leftarrow$ abs(fft($\mathbf{P}$[:,i]))\;
-%    ps $\leftarrow$ p1**2\;
-%    ps $\leftarrow$ ps[ix]\;
-%    frequencies[i] $\leftarrow$ fs[index of the maximum value in ps]\;
-%}
-%\Return abs(frequencies)
-%\caption{Dominant Frequency Finder}
-%\end{algorithm}
+possible outliers. 
 
 Once the eigenpairs are chosen, we proceed with the classical definition
 of the method. If $I$ represents a set of indices corresponding to the
@@ -218,8 +160,7 @@ original signal and the reconstruction, $R=Y-Yt$.
 We applied SSA for analysis of all five meteorological variables across
 all facilities (Table~\ref{tab:datasets}) to identify outliers in all
 meteorological observations.
-%In this paper, we chose the \textit{temp\_mean} data from instrument E33
-%as $Y$ to illustrate SSA. 
+
 Because SSA requires the time series data to be continuous, 
 we corrected any missing values in the time series by replacing them
 with long term seasonality. 
@@ -308,14 +249,6 @@ Vector of distances within each cluster were used to identify points
 that are on fringes of the regime they belong to and considered
 outliers. All five meteorological variables were used in this analysis.
 Algorithm~\ref{alg:kmeans} describes the workflow.
-
-%We then transformed the generated clusters into a vector of distance between
-%each point and its corresponding centroid. If the distance of a point is
-%larger than the threshold, this point will be filtered out as an
-%outlier. 
-%Algorithm~\ref{alg:kmeans} describes the whole process. Unlike
-%SSA, we used all the 5 variables mentioned in Datasets section together
-%to extract outliers.
 
 \begin{figure*}[ht]
     \centering
