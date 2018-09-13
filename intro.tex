@@ -26,10 +26,7 @@ for research.
 Outlier detection, also called anomaly detection or intrusion detection,
 is a common task in many application domains that include time
 series data, streaming data, distributed data, spatio-temporal
-data, and network data \cite{gupta2014outlier}. Temporal data is
-a broad concept that includes commercial transactions, sensor
-data, astronomy data, computer network traffic, medical records,
-judicial records, social network data and many others. Common
+data, and network data \cite{gupta2014outlier}. Common
 techniques for outlier detection include signal processing,
 classification, clustering, nearest neighbor, density,
 statistical, information theory, spectral decomposition, and
@@ -49,12 +46,7 @@ K-means \cite{macqueen1967some}, dynamic clustering
 \cite{sequeira2002admit}, single-linkage clustering
 \cite{portnoy2001intrusion}, principal component analysis (PCA)
 \cite{gupta2013context}, and self-organizing map (SOM)
-\cite{gonzalez2003anomaly} are also popular. The choice of the
-clustering algorithm depends on the problem itself as each has
-different size and complexity. Researchers have also tried supervised
-methods such as neural networks \cite{dasgupta2000comparison},
-support vector machines (SVMs) \cite{li2006motion}, and decision
-trees \cite{kang2005learning} to detect outliers.
+\cite{gonzalez2003anomaly} are also popular. 
 
 Different from the methods mentioned above, window-based detection 
 breaks the time series data into overlapping subsequences with fixed
@@ -78,26 +70,8 @@ Second, the temporal data has space and time dimensions which make it
 complex to analysis. Third, its scale is massive, and efficient algorithm
 is crucial for fast outlier detection. One common problem for temporal
 data is to detect outlier graph snapshots from a series of graph snapshots
-in temporal networks. Spearman's correlation coefficient is a good
-candidate for such problem. It is the rank correlation between two
-sorted lists of graph vertices which are ordered by PageRank or other
-properties \cite{papadimitriou2010web}. Similar to Spearman's
-correlation coefficient, Pearson correlation coefficient, which is explained 
-in detail later and mutual information are also commonly used. 
-Jaccard similarity, graph edit distance, spectral distance and entropy 
-distance are few other commonly proven metrics in temporal network outlier detection.
-Jaccard similarity is the size of intersection vertex set
-divided by the size of union vertex set \cite{jay2012systematic}. Graph
-edit distance describes the necessary changes to make graph $G_1$
-isomorphic to graph $G_2$. It can defined as $d(G_1, G_2) = |V_{G_1}| +
-|V_{G_2}| - 2|V_{G_1} \cap V_{G_2}| + |E_{G_1}| + |E_{G_2}| - 2|E_{G_1}
-\cap E_{G_2}|$ \cite{papadimitriou2010web}. The spectral distance is the
-difference between the adjacency spectrum of graph $G_1$ and $G_2$,
-written as $\sigma(G_1, G_2) =
-\displaystyle\sum_{i=1}^{n}|\lambda_i(G_1) - \lambda_i(G_2)|$
-\cite{jovanovic2012spectral}. Entropy distance is defined by
-the entropy-like measurement between two graphs
-\cite{pincombe2005anomaly}.
+in temporal networks. Pearson correlation coefficient , which is explained 
+in detail later, is a good candidate for such problem. 
 
 A number of approaches have been developed in literature for temporal outlier detection,
 especially for environmental sensor data. Birant et al.
