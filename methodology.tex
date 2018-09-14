@@ -43,8 +43,8 @@ relation.
 \begin{figure*}[ht]
     \centering
     \includegraphics[width=\textwidth]{figures/Spring.png}
-    \caption{Correlation patterns for five meteorological variables
-		during spring season.}
+    \caption{Pearson Correlation patterns for ten meteorological variable pairs
+		during spring season across all the years.}
     \label{fig:pc}
 \end{figure*}
 
@@ -277,11 +277,9 @@ to extreme weather events).
 \subsection{Evaluation of outlier detection}
 ARM data quality assurance program maintains a database of outliers that
 has been been identified, inspected and documented for all historical
-data. 
-However, recorded data quality
+data. However, recorded data quality
 issues are added manually for historical data when an issue is
-identified or reported and are known to be incomplete
-\cite{mccord2016arm}. 
+identified or reported and are known to be incomplete \cite{mccord2016arm}. 
 A description of the outlier event is included in these DQR which often
 are temporary change in operating conditions such as power failures, frozen 
 and snow covered sensors, instrument degradation, or contamination. 
@@ -294,14 +292,17 @@ The Data Quality Reports (DQR) are stored and available as PostgreSQL
 database (\url{http://dq.arm.gov}). 
 We evaluated outliers
 identified by methods developed in this study against the DQRs in the
-database through database queries and calculated precision and recall
-metrics. 
-We calculated \textit{Precision} and \textit{Recall} metrics to evaluate 
-the accuracy of outlier identification methods.
-\textit{Precision} is calculated as True Positives divided by the
-sum of True Positives and False Positives. On the other hand,
-\textit{Recall} is measured from True Positives divided by the sum
-of True Positives and False Negatives. We treated outliers in
-DQR database as True Positives.
+database through database queries and calculated \textit{Precision} and \textit{Recall}
+metrics \cite{perry1955machine}. We treated outliers in DQR database as True Positives. 
+The equation \ref{eq3} and \ref{eq4} show the calculation of \textit{Precision} and \textit{Recall}.
 
+\begin{table*}[ht]
+\begin{equation}\label{eq3}
+\mathbf{Precision} = \frac{\mathbf{True\ Positives}\ (Outliers\ detected\ in\ DQR\ database)}{\mathbf{True\ Positives + False\ Positives}\ (Outliers\ detected\ not\ in\ DQR\ database)}
+\end{equation}
+
+\begin{equation}\label{eq4}
+\mathbf{Recall} = \frac{\mathbf{True\ Positives}\ (Outliers\ detected\ in\ DQR\ database)}{\mathbf{True\ Positives + False\ Negatives}\ (Undetected\ records\ in\ DQR\ database)}
+\end{equation}
+\end{table*}
 

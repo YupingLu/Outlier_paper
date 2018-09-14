@@ -5,18 +5,17 @@ with some events identified by more than one methods
 (Figures~\ref{fig:pc},\ref{fig:ssa},\ref{fig:kmeans}).
 
 Among three methods Pearson correlation was least effective with
-frequent false negatives.
-That is due to the fact that pairwise Pearson correlation method was 
-applied at seasonal scale, thus was only able to find large outliers.
+frequent false negatives. Pearson correlation is also an aggressive method that
+it may include many false positives. Those are all due to the fact 
+that pairwise Pearson correlation method was applied at seasonal scale.
 Pearson correlation coefficient is a pairwise comparison method, however, 
 if the two variables deviates in the same direction, their correlation 
 may not change significantly and thus may go undetected. Due to seasonal
 nature of the analysis, it was not able to identify outliers that
-persisted at hours to days only.
-Univariate SSA method was very effective at identifying outlier high and
-low values in the time series with high \textit{Precision} but low \textit{Recall}. 
+persisted at hours to days only. Univariate SSA method was very effective 
+at identifying outlier high and low values in the time series with high \textit{Precision} but low \textit{Recall}. 
 $k$-means based outlier detection was also able to identify outliers
-with high \textit{Precision} and low \textit{Recall}. 
+with high \textit{Precision} and low \textit{Recall}.
 
 \begin{table}[ht]
 \caption{Comparison of SSA and K-means Outlier Set Size}
@@ -58,9 +57,10 @@ SSA method identified largest number of outlier events (922)
 identified 508 events. While 378 events were identified as outlier by
 both the methods (intersection), 674 events were only identified by one
 of the methods (Table~\ref{tab:comp}).
-Figure~\ref{fig:combined} show all the outliers detected by SSA and
-$k$-means methods at facility E33 for air temperature. 
-When combined together developed outlier detection methods had
+Figure~\ref{fig:combined} shows all the outliers detected by Pearson correlation, SSA and
+$k$-means methods at facility E33 for air temperature. We can see from Figure~\ref{fig:combined}
+that spring 2015 was treated as outlier season by Pearson correlation due to the big 
+temperature fluctuations. When combined together SSA and $k$-means methods had
 \textit{Precision} of 11.10\% which show that many of the outliers
 detected are not within ARM DQR database, which is a known limitation of
 the current records that this current study is trying to address.
@@ -77,7 +77,8 @@ to capture outlier events caused by a wide range of conditions.
     \centering
     \includegraphics[width=\textwidth]{figures/combined.png}
     \caption{Outliers detected at facility E33 for air temperature
-		by SSA and $k$-means algorithms. Outliers detected by both
+		by Pearson correlation, SSA and $k$-means algorithms. The yellow shaded areas are
+		outliers detected by Pearson correlation. Outliers detected by both SSA and $k$-means
 		algorithms are shown by red squares, while those identified by
 		SSA and $k$-means only are indicated by black stars and orange
 		diamonds respectively. DQR records are denoted by the vertical green shaded areas.}
