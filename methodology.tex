@@ -1,19 +1,30 @@
 \section{Methodology}
 From the many outlier detection methods introduced in the first section,
 we carefully selected Pearson correlation coefficient, Singular
-Spectrum Analysis and $k$-means for our study and tested them on ARM data. 
+Spectrum Analysis and $k$-means for our study and applied them to ARM
+time series data. 
 
-The various algorithms required differing levels of preprocessing. The
-first level raw data was stored in minute resolution. It was normalized
-for pairwise comparison algorithm. Some algorithms might not need
-so much detail information to extract outliers. Thus we created a
-second level data by averaging the minute data points into one
-day point from the raw data. The second level data could save a lot
-of running time and is easier for Plotly \cite{plotly} and
-Matplotlib \cite{Hunter:2007} to visualize. The third level data
-was specifically created for multivariate analysis by standardization
-all the 5 variables into the same scale based on the second level
-data. Below we will discuss each algorithm in detail. 
+\subsection{Data Pre-processing}
+Raw time series data from MET instruments are available at temporal
+resolution of one minute for all variables considered in this study.
+Data were pre-processed for in various analysis in our study. One minute
+temporal resolution time series was standardized with mean of zero and
+one standard deviation for Pearson Correlation analysis. A daily
+temporal resolution standardized time series was prepared for use with
+SSA based detection method. Multi-variate cluster analysis was conducted
+using standardized daily time series of all meteorological variables.
+
+%The various algorithms required differing levels of preprocessing. The
+%first level raw data was stored in minute resolution. It was normalized
+%for pairwise comparison algorithm. Some algorithms might not need
+%so much detail information to extract outliers. Thus we created a
+%second level data by averaging the minute data points into one
+%day point from the raw data. The second level data could save a lot
+%of running time and is easier for Plotly \cite{plotly} and
+%Matplotlib \cite{Hunter:2007} to visualize. The third level data
+%was specifically created for multivariate analysis by standardization
+%all the 5 variables into the same scale based on the second level
+%data. Below we will discuss each algorithm in detail. 
 
 \subsection{Pearson correlation coefficient}
 Co-located meteorological variables measure different aspect of the
@@ -87,8 +98,7 @@ general idea is to use a subset of the decomposition of trajectory
 matrix to approximate the original data. Many applications can be found
 in \cite{golyandina2013singular}. For example, SSA can be applied to
 monitor volcanic activity \cite{bozzo2010relationship}. It can also be
-used to extract trend \cite{alexandrov2008method}. Different from the
-classic SSA method, we defined our own version of SSA which is designed
+used to extract trend \cite{alexandrov2008method}. SSA method is designed
 to remove any number of modes of specified periodicity from the time
 series. This is meant to remove known seasonalities from the data in 
 order to isolate true anomalous values more accurately. 
