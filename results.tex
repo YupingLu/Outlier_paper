@@ -36,24 +36,24 @@ Symmetric Difference & 674\\
 \end{tabular}
 \end{table}
 
-\begin{table}[ht]
+\begin{table*}[ht]
 \caption{Precision and Recall of SSA and K-means}
 \label{tab:pr}
 \centering
-\begin{tabular}{|l|c|c|c|}
+\begin{tabular}{|l|c|c|c|c|c|}
 \hline
-Method & Variable & Precision & Recall\\
+Method & Variable & Database Entries & Affected Days & Precision & Recall\\
 \hline
-SSA & Air Temperature & 16.00\% & 1.20\%\\
-SSA &  Vapor Pressure & 20.70\% & 1.40\%\\
-SSA & Atmospheric Pressure  & 0.00\% & 0.00\%\\
-SSA & Relative Humidity & 14.80\% & 0.50\%\\
-SSA & Wind Speed & 0.60\% & 1.50\%\\
-Kmeans & All Variables & 12.90\% & 1.90\%\\
-Combined & All Variables & 11.10\% & 4.10\%\\
+SSA & Air Temperature & 41 & 8217 & 16.00\% & 1.20\%\\
+SSA & Vapor Pressure & 42 & 8194 & 20.70\% & 1.40\%\\
+SSA & Atmospheric Pressure & 12 & 76 & 0.00\% & 0.00\%\\
+SSA & Relative Humidity & 32 & 8108 & 14.80\% & 0.50\%\\
+SSA & Wind Speed & 52 & 265 & 0.60\% & 1.50\%\\
+Kmeans & All Variables & 181 & 8540 & 13.00\% & 1.90\%\\
+Combined & All Variables & 181 & 8540 & 11.10\% & 4.10\%\\
 \hline
 \end{tabular}
-\end{table}
+\end{table*}
 
 In our experiment, SSA method identified largest number of outlier events (922)
 (Table~\ref{tab:comp}) across the entire dataset, while $k$-means
