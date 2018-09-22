@@ -300,8 +300,14 @@ are usually submitted by either the Data Quality Office \cite{peppler2016arm}
 or the instrument mentor \cite{cress2016deploying}. 
 The Data Quality Reports (DQR) are stored and available as PostgreSQL
 database (\url{http://dq.arm.gov}). 
-We evaluated outliers
-identified by methods developed in this study against the DQRs in the
+During study period of 1994-2017, across 24 facilties studied at SGP
+site, a total of 181 DQRs were reported 
+for MET variables analyzed, each often spanning multiple day time
+period totalling 8540 days. The reported data quality issues covered all five variables: air
+temperature (41 events; 8217 days), vapor pressure (42 events; 8194
+days), atmospheric pressure (12 events; 76 days), relative humidity (32
+events; 8108 days), and wind speed (52 events; 265 days).  
+We evaluated outliers identified by methods developed in this study against the DQRs in the
 database through database queries and calculated \textit{Precision} and \textit{Recall}
 metrics \cite{perry1955machine}. We treated outliers detected in DQR database as True Positives. 
 The equation \ref{eq3} and \ref{eq4} show the calculation of \textit{Precision} and \textit{Recall}.
